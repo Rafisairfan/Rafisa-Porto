@@ -1,0 +1,471 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Rafisa Arif Irfan — Supply Chain Data Scientist in Jakarta. Inventory analytics, stock allocation, and machine learning for national retail.">
+<meta property="og:title" content="Rafisa Arif Irfan — Supply Chain Data Scientist">
+<meta property="og:description" content="Inventory analytics, stock allocation, and machine learning for national retail.">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#0a0f17">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230a0f17'/%3E%3Ctext x='16' y='22' font-family='Arial' font-weight='700' font-size='16' text-anchor='middle' fill='%23f5a524'%3ER.%3C/text%3E%3C/svg%3E">
+<title>Rafisa Arif Irfan — Supply Chain Data Scientist</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap">
+<style>
+html,body{margin:0}img{max-width:100%}[hidden]{display:none!important}
+:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+
+/* Layout: dark "control room" — static isometric warehouse behind the hero, glass sticky nav,
+   hero with rotating role, interactive pipeline, scroll-filled timeline, spotlight cards.
+   Deliberately single dark theme. */
+:root {
+  color-scheme: dark;
+  --bg: #0a0f17;
+  --surface: rgba(20, 28, 41, .72);
+  --surface-solid: #141c29;
+  --ink: #e9eef6;
+  --muted: #8d9ab0;
+  --line: rgba(148, 166, 194, .16);
+  --amber: #f5a524;
+  --cyan: #56c6ff;
+  --glow: rgba(245, 165, 36, .18);
+  --display: 'Bricolage Grotesque', 'Segoe UI', system-ui, sans-serif;
+  --body: 'Geist', 'Segoe UI', system-ui, sans-serif;
+  --mono: 'Geist Mono', ui-monospace, Menlo, Consolas, monospace;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 16px; line-height: 1.6; overflow-x: hidden; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 30; background: var(--bg); }
+.glow-orb { position: fixed; z-index: 0; pointer-events: none; width: 620px; height: 620px; max-width: 120vw; border-radius: 50%; filter: blur(90px); opacity: .5; }
+.orb-a { top: -220px; right: -160px; background: radial-gradient(circle, rgba(245,165,36,.35), transparent 65%); }
+.orb-b { top: 55vh; left: -260px; background: radial-gradient(circle, rgba(86,198,255,.22), transparent 65%); }
+/* Static isometric warehouse behind the hero */
+.scene { position: absolute; top: 40px; right: max(-120px, calc(50% - 760px)); width: min(980px, 95vw); z-index: 0; pointer-events: none;
+  -webkit-mask-image: radial-gradient(ellipse 70% 65% at 60% 45%, #000 35%, transparent 80%); mask-image: radial-gradient(ellipse 70% 65% at 60% 45%, #000 35%, transparent 80%); opacity: .55; }
+.warehouse { display: block; width: 100%; height: auto; max-width: 100%; }
+.warehouse polygon { stroke-width: .9; stroke-linejoin: round; }
+.iso-floor { stroke: rgba(148,166,194,.10); stroke-width: .8; }
+.iso-post .l, .iso-post .r, .iso-post .t, .iso-shelf .l, .iso-shelf .r, .iso-shelf .t { stroke: rgba(86,198,255,.55); }
+.iso-post .l, .iso-shelf .l { fill: #0f1824; } .iso-post .r, .iso-shelf .r { fill: #0d1520; } .iso-post .t, .iso-shelf .t { fill: #132033; }
+.iso-box .l, .iso-box .r, .iso-box .t { stroke: rgba(148,166,194,.45); }
+.iso-box .l { fill: #121a26; } .iso-box .r { fill: #0e1520; } .iso-box .t { fill: #18222f; }
+.iso-boxa .l, .iso-boxa .r, .iso-boxa .t { stroke: rgba(245,165,36,.85); }
+.iso-boxa .l { fill: #2a1e0b; } .iso-boxa .r { fill: #20170a; } .iso-boxa .t { fill: #3a2a10; }
+@media (max-width: 860px) { .scene { top: 60px; right: -30%; width: 150vw; max-width: none; opacity: .35; } }
+.wrap { position: relative; z-index: 1; max-width: 1040px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+a { color: inherit; }
+a:focus-visible, button:focus-visible { outline: 2px solid var(--amber); outline-offset: 3px; border-radius: 6px; }
+.label { font-family: var(--mono); font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+h1, h2, h3 { font-family: var(--display); text-wrap: balance; margin: 0; }
+.grad { background: linear-gradient(100deg, var(--amber) 10%, #ffd27a 45%, var(--cyan) 95%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+
+/* Nav */
+nav { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; margin-top: 14px; }
+.nav-in { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 12px 10px 18px; border: 1px solid var(--line); border-radius: 14px; background: rgba(10,15,23,.65); backdrop-filter: blur(14px) saturate(140%); -webkit-backdrop-filter: blur(14px) saturate(140%); }
+.brand { font-family: var(--display); font-weight: 800; font-size: 18px; text-decoration: none; letter-spacing: -.01em; }
+.brand span { color: var(--amber); }
+.nav-links { display: flex; gap: 4px; flex-wrap: wrap; }
+.nav-links a { font-size: 14px; color: var(--muted); text-decoration: none; padding: 6px 10px; border-radius: 8px; transition: color .2s, background .2s; }
+.nav-links a:hover, .nav-links a.active { color: var(--ink); background: rgba(255,255,255,.06); }
+.progress { position: absolute; left: 14px; right: 14px; bottom: -1px; height: 2px; border-radius: 2px; background: linear-gradient(90deg, var(--amber), var(--cyan)); transform-origin: left; transform: scaleX(var(--p, 0)); }
+
+/* Hero */
+.hero { padding-block: 72px 40px; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 48px; align-items: center; }
+.status { display: inline-flex; align-items: center; gap: 10px; font-family: var(--mono); font-size: 13px; color: var(--ink); padding: 6px 14px 6px 10px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); }
+.pulse { width: 9px; height: 9px; border-radius: 50%; background: #34d27b; position: relative; }
+.pulse::after { content: ""; position: absolute; inset: -4px; border-radius: 50%; border: 2px solid #34d27b; animation: ping 2s ease-out infinite; }
+@keyframes ping { from { transform: scale(.6); opacity: .9; } to { transform: scale(1.8); opacity: 0; } }
+.hero h1 { font-size: clamp(46px, 8.5vw, 92px); line-height: .95; font-weight: 800; letter-spacing: -.035em; margin-top: 22px; }
+.rotator { font-family: var(--display); font-weight: 600; font-size: clamp(22px, 3.2vw, 32px); margin: 20px 0 16px; min-height: 1.3em; }
+.rotator .word { color: var(--amber); }
+.caret { display: inline-block; width: 3px; height: .95em; background: var(--amber); vertical-align: -0.1em; margin-left: 3px; animation: blink 1s steps(1) infinite; }
+@keyframes blink { 50% { opacity: 0; } }
+.intro { color: var(--muted); max-width: 56ch; margin: 0 0 28px; font-size: 17px; }
+.cta { display: flex; flex-wrap: wrap; gap: 12px; }
+.btn { font-family: var(--body); font-size: 15px; font-weight: 500; padding: 12px 20px; border-radius: 12px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); text-decoration: none; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: transform .2s, border-color .2s, box-shadow .2s; }
+.btn:hover { transform: translateY(-2px); border-color: rgba(245,165,36,.5); }
+.btn.primary { background: var(--amber); color: #1a1205; border-color: var(--amber); font-weight: 600; box-shadow: 0 8px 30px -8px rgba(245,165,36,.6); }
+.btn.primary:hover { box-shadow: 0 12px 40px -6px rgba(245,165,36,.75); }
+.photo-wrap { position: relative; width: 230px; max-width: 100%; perspective: 800px; }
+.photo-card { position: relative; border-radius: 22px; padding: 6px; background: linear-gradient(140deg, var(--amber), rgba(255,255,255,.08) 40%, var(--cyan)); transition: transform .15s ease-out; transform-style: preserve-3d; }
+.photo-card img { display: block; width: 100%; aspect-ratio: 316/450; object-fit: cover; border-radius: 17px; }
+.photo-tag { position: absolute; left: -22px; bottom: 26px; font-family: var(--mono); font-size: 12px; padding: 8px 12px; border-radius: 10px; background: var(--surface-solid); border: 1px solid var(--line); box-shadow: 0 10px 30px rgba(0,0,0,.4); transform: translateZ(40px); }
+.photo-tag b { color: var(--amber); font-weight: 500; }
+
+/* Section shell */
+section { padding-block: 56px; scroll-margin-top: 90px; }
+.sec-head { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 28px; }
+.sec-head h2 { font-size: clamp(32px, 4.6vw, 46px); font-weight: 800; letter-spacing: -.02em; }
+.reveal { transition: transform .8s cubic-bezier(.2,.7,.2,1), filter .8s; }
+.reveal.pre { transform: translateY(28px); filter: blur(2px); }
+
+/* Spotlight surface */
+.spot { position: relative; background: var(--surface); border: 1px solid var(--line); border-radius: 18px; overflow: hidden; }
+.spot::before { content: ""; position: absolute; inset: 0; pointer-events: none; opacity: 0; transition: opacity .3s; background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 50%), var(--glow), transparent 60%); }
+.spot:hover::before { opacity: 1; }
+.spot > * { position: relative; }
+
+/* Pipeline */
+.pipe { padding: 28px; }
+.stages { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 14px; position: relative; }
+.wire { position: absolute; left: 8%; right: 8%; top: 34px; height: 2px; background: var(--line); overflow: hidden; border-radius: 2px; }
+.wire i { position: absolute; top: -1px; width: 60px; height: 4px; border-radius: 4px; background: linear-gradient(90deg, transparent, var(--amber), var(--cyan)); animation: flow 3.2s linear infinite; }
+.wire i:nth-child(2) { animation-delay: -1.07s; }
+.wire i:nth-child(3) { animation-delay: -2.13s; }
+@keyframes flow { from { left: -60px; } to { left: 100%; } }
+.stage { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 10px; background: none; border: 0; color: var(--ink); cursor: pointer; padding: 0; font: inherit; min-width: 0; }
+.node { width: 68px; height: 68px; border-radius: 18px; display: grid; place-items: center; background: var(--surface-solid); border: 1px solid var(--line); font-family: var(--mono); font-size: 13px; font-weight: 500; color: var(--muted); transition: all .25s; }
+.stage:hover .node { border-color: rgba(245,165,36,.5); color: var(--ink); transform: translateY(-3px); }
+.stage[aria-selected="true"] .node { background: linear-gradient(140deg, rgba(245,165,36,.22), rgba(86,198,255,.12)); border-color: var(--amber); color: var(--amber); box-shadow: 0 0 0 6px rgba(245,165,36,.08), 0 10px 30px -10px rgba(245,165,36,.6); }
+.stage .txt { display: flex; flex-direction: column; gap: 2px; align-items: inherit; min-width: 0; }
+.stage .nm { font-family: var(--display); font-weight: 600; font-size: 17px; }
+.stage .st { font-family: var(--mono); font-size: 11px; letter-spacing: .1em; color: var(--muted); }
+.detail { margin-top: 26px; padding: 20px 22px; border-radius: 14px; background: rgba(0,0,0,.22); border: 1px solid var(--line); display: grid; grid-template-columns: auto minmax(0,1fr); gap: 6px 18px; align-items: start; }
+.detail .k { font-family: var(--mono); font-size: 12px; color: var(--amber); padding-top: 3px; }
+.detail h3 { font-size: 20px; }
+.detail p { margin: 4px 0 0; color: var(--muted); }
+.term { font-family: var(--mono); font-size: 13px; color: var(--muted); margin-top: 14px; grid-column: 1 / -1; }
+.term b { color: #34d27b; font-weight: 500; }
+
+/* Timeline */
+.timeline { position: relative; padding-left: 34px; }
+.rail { position: absolute; left: 7px; top: 8px; bottom: 8px; width: 2px; background: var(--line); border-radius: 2px; }
+.rail-fill { position: absolute; left: 0; top: 0; width: 100%; height: calc(var(--t, 0) * 100%); background: linear-gradient(var(--amber), var(--cyan)); border-radius: 2px; box-shadow: 0 0 12px rgba(245,165,36,.5); }
+.job { position: relative; padding: 24px 26px; margin-bottom: 18px; }
+.job::after { content: ""; position: absolute; left: -33px; top: 30px; width: 14px; height: 14px; border-radius: 50%; background: var(--bg); border: 2px solid var(--muted); }
+.job.current::after { border-color: var(--amber); background: var(--amber); box-shadow: 0 0 0 5px rgba(245,165,36,.18); }
+.job-top { display: flex; justify-content: space-between; gap: 10px 20px; flex-wrap: wrap; align-items: baseline; }
+.job h3 { font-size: 22px; font-weight: 600; line-height: 1.25; }
+.when { font-family: var(--mono); font-size: 13px; color: var(--muted); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.org { color: var(--amber); font-weight: 500; margin: 4px 0 6px; }
+.badge { font-family: var(--mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; padding: 3px 9px; border-radius: 6px; background: rgba(52,210,123,.12); color: #5fe39a; margin-left: 8px; vertical-align: 2px; }
+.groups { display: grid; gap: 16px; margin-top: 14px; }
+.group .label { color: var(--cyan); }
+ul { margin: 6px 0 0; padding-left: 18px; color: #cdd5e2; }
+li { margin: 6px 0; }
+li::marker { color: var(--amber); }
+.job:not(.current) ul { margin-top: 10px; }
+.tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+.tag { font-family: var(--mono); font-size: 12.5px; padding: 5px 11px; border-radius: 8px; background: rgba(255,255,255,.04); border: 1px solid var(--line); color: var(--ink); transition: border-color .2s, color .2s; }
+.tag:hover { border-color: var(--amber); color: var(--amber); }
+
+/* Bento skills */
+.bento { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 16px; }
+.bento .spot { padding: 22px; }
+.b-wide { grid-column: span 4; }
+.b-mid { grid-column: span 2; }
+.b-third { grid-column: span 2; }
+.bento h3 { font-size: 19px; font-weight: 600; display: flex; align-items: center; gap: 10px; }
+.bento h3 .ico { font-family: var(--mono); font-size: 12px; color: var(--amber); padding: 3px 7px; border: 1px solid rgba(245,165,36,.35); border-radius: 6px; }
+.bento p { color: var(--muted); margin: 8px 0 0; font-size: 15px; }
+
+/* Projects */
+.projects { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.proj { display: flex; flex-direction: column; gap: 10px; padding: 24px; text-decoration: none; transition: transform .25s, border-color .25s; }
+.proj:hover { transform: translateY(-4px); border-color: rgba(245,165,36,.4); }
+.proj h3 { font-size: 20px; font-weight: 600; }
+.proj p { margin: 0; color: var(--muted); font-size: 15px; }
+.proj .go { margin-top: auto; padding-top: 10px; font-family: var(--mono); font-size: 12.5px; color: var(--cyan); overflow-wrap: anywhere; }
+.proj .go span { display: inline-block; transition: transform .25s; }
+.proj:hover .go span { transform: translate(3px, -3px); }
+
+.two { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.two .spot { padding: 24px; }
+.two h3 { font-size: 20px; font-weight: 600; }
+.two p { color: var(--muted); margin: 6px 0 0; }
+.two .item + .item { margin-top: 18px; padding-top: 18px; border-top: 1px solid var(--line); }
+
+/* Contact */
+.contact { text-align: center; padding: 56px 24px; margin-bottom: 40px; }
+.contact h2 { font-size: clamp(34px, 6vw, 64px); font-weight: 800; letter-spacing: -.03em; line-height: 1.02; }
+.contact p { color: var(--muted); max-width: 46ch; margin: 16px auto 28px; }
+.contact .cta { justify-content: center; }
+.toast { display: block; margin-top: 14px; font-family: var(--mono); font-size: 13px; color: var(--amber); min-height: 1.4em; }
+footer { position: relative; z-index: 1; text-align: center; padding-block: 0 40px; font-family: var(--mono); font-size: 12px; color: var(--muted); }
+
+@media (max-width: 860px) {
+  .hero { grid-template-columns: 1fr; gap: 32px; padding-top: 48px; }
+  .photo-wrap { width: 170px; order: -1; }
+  .photo-tag { left: auto; right: -40px; }
+  .bento .b-wide, .bento .b-mid, .bento .b-third { grid-column: span 6; }
+  .projects, .two { grid-template-columns: 1fr; }
+  .nav-links a:not(.keep) { display: none; }
+}
+@media (max-width: 640px) {
+  .stages { grid-template-columns: 1fr; gap: 12px; }
+  .wire { left: 33px; right: auto; top: 20px; bottom: 20px; width: 2px; height: auto; }
+  .wire i { width: 4px; height: 50px; left: -1px; top: -50px; animation-name: flowv; }
+  @keyframes flowv { from { top: -50px; } to { top: 100%; } }
+  .stage { flex-direction: row; text-align: left; gap: 14px; }
+  .stage .txt { display: flex; flex-direction: column; }
+  .pipe { padding: 20px; }
+  .detail { grid-template-columns: 1fr; }
+  .job { padding: 20px; }
+  .timeline { padding-left: 26px; }
+  .job::after { left: -25px; }
+  .rail { left: 5px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  .reveal.pre { transform: none; filter: none; }
+  html { scroll-behavior: auto; }
+}
+</style>
+</head>
+<body>
+<div class="glow-orb orb-a" aria-hidden="true"></div>
+<div class="glow-orb orb-b" aria-hidden="true"></div>
+<div class="scene" aria-hidden="true"><svg class="warehouse" viewBox="-387 -120 954 657" aria-hidden="true" focusable="false"><line class="iso-floor" x1="22.5" y1="-13.0" x2="-382.8" y2="221.0"/><line class="iso-floor" x1="67.5" y1="13.0" x2="-337.7" y2="247.0"/><line class="iso-floor" x1="112.6" y1="39.0" x2="-292.7" y2="273.0"/><line class="iso-floor" x1="157.6" y1="65.0" x2="-247.7" y2="299.0"/><line class="iso-floor" x1="202.6" y1="91.0" x2="-202.6" y2="325.0"/><line class="iso-floor" x1="247.7" y1="117.0" x2="-157.6" y2="351.0"/><line class="iso-floor" x1="292.7" y1="143.0" x2="-112.6" y2="377.0"/><line class="iso-floor" x1="337.7" y1="169.0" x2="-67.5" y2="403.0"/><line class="iso-floor" x1="382.8" y1="195.0" x2="-22.5" y2="429.0"/><line class="iso-floor" x1="427.8" y1="221.0" x2="22.5" y2="455.0"/><line class="iso-floor" x1="472.8" y1="247.0" x2="67.5" y2="481.0"/><line class="iso-floor" x1="517.9" y1="273.0" x2="112.6" y2="507.0"/><line class="iso-floor" x1="562.9" y1="299.0" x2="157.6" y2="533.0"/><line class="iso-floor" x1="22.5" y1="-13.0" x2="562.9" y2="299.0"/><line class="iso-floor" x1="-22.5" y1="13.0" x2="517.9" y2="325.0"/><line class="iso-floor" x1="-67.5" y1="39.0" x2="472.8" y2="351.0"/><line class="iso-floor" x1="-112.6" y1="65.0" x2="427.8" y2="377.0"/><line class="iso-floor" x1="-157.6" y1="91.0" x2="382.8" y2="403.0"/><line class="iso-floor" x1="-202.6" y1="117.0" x2="337.7" y2="429.0"/><line class="iso-floor" x1="-247.7" y1="143.0" x2="292.7" y2="455.0"/><line class="iso-floor" x1="-292.7" y1="169.0" x2="247.7" y2="481.0"/><line class="iso-floor" x1="-337.7" y1="195.0" x2="202.6" y2="507.0"/><line class="iso-floor" x1="-382.8" y1="221.0" x2="157.6" y2="533.0"/><g class="iso-post"><polygon class="l" points="19.1,14.9 22.5,16.9 22.5,-111.8 19.1,-113.8"/><polygon class="r" points="25.9,14.9 22.5,16.9 22.5,-111.8 25.9,-113.8"/><polygon class="t" points="22.5,-115.7 25.9,-113.8 22.5,-111.8 19.1,-113.8"/></g><g class="iso-shelf"><polygon class="l" points="-9.0,31.2 354.6,241.1 354.6,238.0 -9.0,28.1"/><polygon class="r" points="386.2,222.9 354.6,241.1 354.6,238.0 386.2,219.8"/><polygon class="t" points="22.5,9.9 386.2,219.8 354.6,238.0 -9.0,28.1"/></g><g class="iso-shelf"><polygon class="l" points="-9.0,-10.4 354.6,199.5 354.6,196.4 -9.0,-13.5"/><polygon class="r" points="386.2,181.3 354.6,199.5 354.6,196.4 386.2,178.2"/><polygon class="t" points="22.5,-31.7 386.2,178.2 354.6,196.4 -9.0,-13.5"/></g><g class="iso-shelf"><polygon class="l" points="-9.0,-52.0 354.6,157.9 354.6,154.8 -9.0,-55.1"/><polygon class="r" points="386.2,139.7 354.6,157.9 354.6,154.8 386.2,136.6"/><polygon class="t" points="22.5,-73.3 386.2,136.6 354.6,154.8 -9.0,-55.1"/></g><g class="iso-shelf"><polygon class="l" points="-9.0,-93.6 354.6,116.3 354.6,113.2 -9.0,-96.7"/><polygon class="r" points="386.2,98.1 354.6,116.3 354.6,113.2 386.2,95.0"/><polygon class="t" points="22.5,-114.9 386.2,95.0 354.6,113.2 -9.0,-96.7"/></g><g class="iso-box"><polygon class="l" points="3.4,30.0 21.4,40.4 21.4,6.6 3.4,-3.8"/><polygon class="r" points="43.9,27.4 21.4,40.4 21.4,6.6 43.9,-6.4"/><polygon class="t" points="25.9,-16.8 43.9,-6.4 21.4,6.6 3.4,-3.8"/></g><g class="iso-box"><polygon class="l" points="3.4,-11.6 30.4,4.0 30.4,-29.8 3.4,-45.4"/><polygon class="r" points="52.9,-9.0 30.4,4.0 30.4,-29.8 52.9,-42.8"/><polygon class="t" points="25.9,-58.4 52.9,-42.8 30.4,-29.8 3.4,-45.4"/></g><g class="iso-post"><polygon class="l" points="-9.0,31.2 -5.6,33.1 -5.6,-95.6 -9.0,-97.5"/><polygon class="r" points="-2.3,31.2 -5.6,33.1 -5.6,-95.6 -2.3,-97.5"/><polygon class="t" points="-5.6,-99.5 -2.3,-97.5 -5.6,-95.6 -9.0,-97.5"/></g><g class="iso-box"><polygon class="l" points="23.6,-41.5 46.2,-28.5 46.2,-57.1 23.6,-70.1"/><polygon class="r" points="68.7,-41.5 46.2,-28.5 46.2,-57.1 68.7,-70.1"/><polygon class="t" points="46.2,-83.1 68.7,-70.1 46.2,-57.1 23.6,-70.1"/></g><g class="iso-box"><polygon class="l" points="24.8,42.4 51.8,58.0 51.8,39.8 24.8,24.2"/><polygon class="r" points="74.3,45.0 51.8,58.0 51.8,39.8 74.3,26.8"/><polygon class="t" points="47.3,11.2 74.3,26.8 51.8,39.8 24.8,24.2"/></g><g class="iso-box"><polygon class="l" points="33.8,6.0 56.3,19.0 56.3,-9.6 33.8,-22.6"/><polygon class="r" points="78.8,6.0 56.3,19.0 56.3,-9.6 78.8,-22.6"/><polygon class="t" points="56.3,-35.6 78.8,-22.6 56.3,-9.6 33.8,-22.6"/></g><g class="iso-post"><polygon class="l" points="91.2,56.5 94.6,58.5 94.6,-70.2 91.2,-72.2"/><polygon class="r" points="97.9,56.5 94.6,58.5 94.6,-70.2 97.9,-72.2"/><polygon class="t" points="94.6,-74.1 97.9,-72.2 94.6,-70.2 91.2,-72.2"/></g><g class="iso-box"><polygon class="l" points="75.4,71.6 102.5,87.2 102.5,63.8 75.4,48.2"/><polygon class="r" points="125.0,74.2 102.5,87.2 102.5,63.8 125.0,50.8"/><polygon class="t" points="97.9,35.2 125.0,50.8 102.5,63.8 75.4,48.2"/></g><g class="iso-box"><polygon class="l" points="75.4,-11.6 93.4,-1.2 93.4,-29.8 75.4,-40.2"/><polygon class="r" points="116.0,-14.2 93.4,-1.2 93.4,-29.8 116.0,-42.8"/><polygon class="t" points="97.9,-53.2 116.0,-42.8 93.4,-29.8 75.4,-40.2"/></g><g class="iso-post"><polygon class="l" points="63.0,72.8 66.4,74.7 66.4,-54.0 63.0,-55.9"/><polygon class="r" points="69.8,72.8 66.4,74.7 66.4,-54.0 69.8,-55.9"/><polygon class="t" points="66.4,-57.9 69.8,-55.9 66.4,-54.0 63.0,-55.9"/></g><g class="iso-box"><polygon class="l" points="95.7,41.7 113.7,52.1 113.7,33.9 95.7,23.5"/><polygon class="r" points="136.2,39.1 113.7,52.1 113.7,33.9 136.2,20.9"/><polygon class="t" points="118.2,10.5 136.2,20.9 113.7,33.9 95.7,23.5"/></g><g class="iso-box"><polygon class="l" points="96.8,0.8 119.3,13.8 119.3,-20.0 96.8,-33.0"/><polygon class="r" points="141.9,0.8 119.3,13.8 119.3,-20.0 141.9,-33.0"/><polygon class="t" points="119.3,-46.0 141.9,-33.0 119.3,-20.0 96.8,-33.0"/></g><g class="iso-post"><polygon class="l" points="-93.4,79.9 -90.1,81.9 -90.1,-46.8 -93.4,-48.8"/><polygon class="r" points="-86.7,79.9 -90.1,81.9 -90.1,-46.8 -86.7,-48.8"/><polygon class="t" points="-90.1,-50.7 -86.7,-48.8 -90.1,-46.8 -93.4,-48.8"/></g><g class="iso-shelf"><polygon class="l" points="-121.6,96.2 242.1,306.1 242.1,303.0 -121.6,93.1"/><polygon class="r" points="273.6,287.9 242.1,306.1 242.1,303.0 273.6,284.8"/><polygon class="t" points="-90.1,74.9 273.6,284.8 242.1,303.0 -121.6,93.1"/></g><g class="iso-shelf"><polygon class="l" points="-121.6,54.6 242.1,264.5 242.1,261.4 -121.6,51.5"/><polygon class="r" points="273.6,246.3 242.1,264.5 242.1,261.4 273.6,243.2"/><polygon class="t" points="-90.1,33.3 273.6,243.2 242.1,261.4 -121.6,51.5"/></g><g class="iso-shelf"><polygon class="l" points="-121.6,13.0 242.1,222.9 242.1,219.8 -121.6,9.9"/><polygon class="r" points="273.6,204.7 242.1,222.9 242.1,219.8 273.6,201.6"/><polygon class="t" points="-90.1,-8.3 273.6,201.6 242.1,219.8 -121.6,9.9"/></g><g class="iso-shelf"><polygon class="l" points="-121.6,-28.6 242.1,181.3 242.1,178.2 -121.6,-31.7"/><polygon class="r" points="273.6,163.1 242.1,181.3 242.1,178.2 273.6,160.0"/><polygon class="t" points="-90.1,-49.9 273.6,160.0 242.1,178.2 -121.6,-31.7"/></g><g class="iso-box"><polygon class="l" points="105.8,89.2 123.8,99.6 123.8,76.2 105.8,65.8"/><polygon class="r" points="146.4,86.6 123.8,99.6 123.8,76.2 146.4,63.2"/><polygon class="t" points="128.3,52.8 146.4,63.2 123.8,76.2 105.8,65.8"/></g><g class="iso-box"><polygon class="l" points="-109.2,95.0 -91.2,105.4 -91.2,87.2 -109.2,76.8"/><polygon class="r" points="-68.7,92.4 -91.2,105.4 -91.2,87.2 -68.7,74.2"/><polygon class="t" points="-86.7,63.8 -68.7,74.2 -91.2,87.2 -109.2,76.8"/></g><g class="iso-box"><polygon class="l" points="-109.2,53.4 -82.2,69.0 -82.2,45.6 -109.2,30.0"/><polygon class="r" points="-59.7,56.0 -82.2,69.0 -82.2,45.6 -59.7,32.6"/><polygon class="t" points="-86.7,17.0 -59.7,32.6 -82.2,45.6 -109.2,30.0"/></g><g class="iso-box"><polygon class="l" points="-109.2,11.8 -91.2,22.2 -91.2,-11.6 -109.2,-22.0"/><polygon class="r" points="-68.7,9.2 -91.2,22.2 -91.2,-11.6 -68.7,-24.6"/><polygon class="t" points="-86.7,-35.0 -68.7,-24.6 -91.2,-11.6 -109.2,-22.0"/></g><g class="iso-post"><polygon class="l" points="-121.6,96.2 -118.2,98.1 -118.2,-30.6 -121.6,-32.5"/><polygon class="r" points="-114.8,96.2 -118.2,98.1 -118.2,-30.6 -114.8,-32.5"/><polygon class="t" points="-118.2,-34.5 -114.8,-32.5 -118.2,-30.6 -121.6,-32.5"/></g><g class="iso-post"><polygon class="l" points="163.2,98.1 166.6,100.1 166.6,-28.6 163.2,-30.6"/><polygon class="r" points="170.0,98.1 166.6,100.1 166.6,-28.6 170.0,-30.6"/><polygon class="t" points="166.6,-32.5 170.0,-30.6 166.6,-28.6 163.2,-30.6"/></g><g class="iso-box"><polygon class="l" points="-78.8,71.0 -51.8,86.6 -51.8,58.0 -78.8,42.4"/><polygon class="r" points="-29.3,73.6 -51.8,86.6 -51.8,58.0 -29.3,45.0"/><polygon class="t" points="-56.3,29.4 -29.3,45.0 -51.8,58.0 -78.8,42.4"/></g><g class="iso-boxa"><polygon class="l" points="147.5,113.2 174.5,128.8 174.5,110.6 147.5,95.0"/><polygon class="r" points="197.0,115.8 174.5,128.8 174.5,110.6 197.0,97.6"/><polygon class="t" points="170.0,82.0 197.0,97.6 174.5,110.6 147.5,95.0"/></g><g class="iso-box"><polygon class="l" points="147.5,71.6 165.5,82.0 165.5,63.8 147.5,53.4"/><polygon class="r" points="188.0,69.0 165.5,82.0 165.5,63.8 188.0,50.8"/><polygon class="t" points="170.0,40.4 188.0,50.8 165.5,63.8 147.5,53.4"/></g><g class="iso-post"><polygon class="l" points="135.1,114.4 138.5,116.3 138.5,-12.4 135.1,-14.3"/><polygon class="r" points="141.9,114.4 138.5,116.3 138.5,-12.4 141.9,-14.3"/><polygon class="t" points="138.5,-16.3 141.9,-14.3 138.5,-12.4 135.1,-14.3"/></g><g class="iso-boxa"><polygon class="l" points="168.9,84.0 191.4,97.0 191.4,73.6 168.9,60.6"/><polygon class="r" points="213.9,84.0 191.4,97.0 191.4,73.6 213.9,60.6"/><polygon class="t" points="191.4,47.6 213.9,60.6 191.4,73.6 168.9,60.6"/></g><g class="iso-post"><polygon class="l" points="-21.4,121.5 -18.0,123.5 -18.0,-5.2 -21.4,-7.2"/><polygon class="r" points="-14.6,121.5 -18.0,123.5 -18.0,-5.2 -14.6,-7.2"/><polygon class="t" points="-18.0,-9.1 -14.6,-7.2 -18.0,-5.2 -21.4,-7.2"/></g><g class="iso-box"><polygon class="l" points="177.9,130.8 204.9,146.4 204.9,128.2 177.9,112.6"/><polygon class="r" points="227.4,133.4 204.9,146.4 204.9,128.2 227.4,115.2"/><polygon class="t" points="200.4,99.6 227.4,115.2 204.9,128.2 177.9,112.6"/></g><g class="iso-box"><polygon class="l" points="-37.2,136.6 -10.1,152.2 -10.1,118.4 -37.2,102.8"/><polygon class="r" points="12.4,139.2 -10.1,152.2 -10.1,118.4 12.4,105.4"/><polygon class="t" points="-14.6,89.8 12.4,105.4 -10.1,118.4 -37.2,102.8"/></g><g class="iso-boxa"><polygon class="l" points="-37.2,95.0 -19.1,105.4 -19.1,76.8 -37.2,66.4"/><polygon class="r" points="3.4,92.4 -19.1,105.4 -19.1,76.8 3.4,63.8"/><polygon class="t" points="-14.6,53.4 3.4,63.8 -19.1,76.8 -37.2,66.4"/></g><g class="iso-box"><polygon class="l" points="-37.2,53.4 -10.1,69.0 -10.1,40.4 -37.2,24.8"/><polygon class="r" points="12.4,56.0 -10.1,69.0 -10.1,40.4 12.4,27.4"/><polygon class="t" points="-14.6,11.8 12.4,27.4 -10.1,40.4 -37.2,24.8"/></g><g class="iso-post"><polygon class="l" points="-49.5,137.8 -46.2,139.7 -46.2,11.0 -49.5,9.1"/><polygon class="r" points="-42.8,137.8 -46.2,139.7 -46.2,11.0 -42.8,9.1"/><polygon class="t" points="-46.2,7.1 -42.8,9.1 -46.2,11.0 -49.5,9.1"/></g><g class="iso-post"><polygon class="l" points="235.3,139.8 238.7,141.7 238.7,13.0 235.3,11.0"/><polygon class="r" points="242.1,139.8 238.7,141.7 238.7,13.0 242.1,11.0"/><polygon class="t" points="238.7,9.1 242.1,11.0 238.7,13.0 235.3,11.0"/></g><g class="iso-post"><polygon class="l" points="-206.0,144.9 -202.6,146.9 -202.6,18.2 -206.0,16.2"/><polygon class="r" points="-199.3,144.9 -202.6,146.9 -202.6,18.2 -199.3,16.2"/><polygon class="t" points="-202.6,14.3 -199.3,16.2 -202.6,18.2 -206.0,16.2"/></g><g class="iso-shelf"><polygon class="l" points="-234.2,161.2 129.5,371.1 129.5,368.0 -234.2,158.1"/><polygon class="r" points="161.0,352.9 129.5,371.1 129.5,368.0 161.0,349.8"/><polygon class="t" points="-202.6,139.9 161.0,349.8 129.5,368.0 -234.2,158.1"/></g><g class="iso-shelf"><polygon class="l" points="-234.2,119.6 129.5,329.5 129.5,326.4 -234.2,116.5"/><polygon class="r" points="161.0,311.3 129.5,329.5 129.5,326.4 161.0,308.2"/><polygon class="t" points="-202.6,98.3 161.0,308.2 129.5,326.4 -234.2,116.5"/></g><g class="iso-shelf"><polygon class="l" points="-234.2,78.0 129.5,287.9 129.5,284.8 -234.2,74.9"/><polygon class="r" points="161.0,269.7 129.5,287.9 129.5,284.8 161.0,266.6"/><polygon class="t" points="-202.6,56.7 161.0,266.6 129.5,284.8 -234.2,74.9"/></g><g class="iso-shelf"><polygon class="l" points="-234.2,36.4 129.5,246.3 129.5,243.2 -234.2,33.3"/><polygon class="r" points="161.0,228.1 129.5,246.3 129.5,243.2 161.0,225.0"/><polygon class="t" points="-202.6,15.1 161.0,225.0 129.5,243.2 -234.2,33.3"/></g><g class="iso-box"><polygon class="l" points="-6.8,154.2 15.8,167.2 15.8,133.4 -6.8,120.4"/><polygon class="r" points="38.3,154.2 15.8,167.2 15.8,133.4 38.3,120.4"/><polygon class="t" points="15.8,107.4 38.3,120.4 15.8,133.4 -6.8,120.4"/></g><g class="iso-boxa"><polygon class="l" points="-6.8,71.0 20.3,86.6 20.3,68.4 -6.8,52.8"/><polygon class="r" points="42.8,73.6 20.3,86.6 20.3,68.4 42.8,55.4"/><polygon class="t" points="15.8,39.8 42.8,55.4 20.3,68.4 -6.8,52.8"/></g><g class="iso-box"><polygon class="l" points="219.5,154.8 237.6,165.2 237.6,147.0 219.5,136.6"/><polygon class="r" points="260.1,152.2 237.6,165.2 237.6,147.0 260.1,134.0"/><polygon class="t" points="242.1,123.6 260.1,134.0 237.6,147.0 219.5,136.6"/></g><g class="iso-box"><polygon class="l" points="219.5,71.6 242.1,84.6 242.1,56.0 219.5,43.0"/><polygon class="r" points="264.6,71.6 242.1,84.6 242.1,56.0 264.6,43.0"/><polygon class="t" points="242.1,30.0 264.6,43.0 242.1,56.0 219.5,43.0"/></g><g class="iso-box"><polygon class="l" points="-221.8,160.0 -194.8,175.6 -194.8,152.2 -221.8,136.6"/><polygon class="r" points="-172.3,162.6 -194.8,175.6 -194.8,152.2 -172.3,139.2"/><polygon class="t" points="-199.3,123.6 -172.3,139.2 -194.8,152.2 -221.8,136.6"/></g><g class="iso-box"><polygon class="l" points="-221.8,118.4 -203.8,128.8 -203.8,110.6 -221.8,100.2"/><polygon class="r" points="-181.3,115.8 -203.8,128.8 -203.8,110.6 -181.3,97.6"/><polygon class="t" points="-199.3,87.2 -181.3,97.6 -203.8,110.6 -221.8,100.2"/></g><g class="iso-box"><polygon class="l" points="-221.8,76.8 -199.3,89.8 -199.3,71.6 -221.8,58.6"/><polygon class="r" points="-176.8,76.8 -199.3,89.8 -199.3,71.6 -176.8,58.6"/><polygon class="t" points="-199.3,45.6 -176.8,58.6 -199.3,71.6 -221.8,58.6"/></g><g class="iso-post"><polygon class="l" points="207.2,156.0 210.5,158.0 210.5,29.2 207.2,27.3"/><polygon class="r" points="213.9,156.0 210.5,158.0 210.5,29.2 213.9,27.3"/><polygon class="t" points="210.5,25.3 213.9,27.3 210.5,29.2 207.2,27.3"/></g><g class="iso-box"><polygon class="l" points="239.8,124.9 262.3,137.9 262.3,109.3 239.8,96.3"/><polygon class="r" points="284.8,124.9 262.3,137.9 262.3,109.3 284.8,96.3"/><polygon class="t" points="262.3,83.3 284.8,96.3 262.3,109.3 239.8,96.3"/></g><g class="iso-box"><polygon class="l" points="240.9,167.2 263.4,180.2 263.4,156.8 240.9,143.8"/><polygon class="r" points="286.0,167.2 263.4,180.2 263.4,156.8 286.0,143.8"/><polygon class="t" points="263.4,130.8 286.0,143.8 263.4,156.8 240.9,143.8"/></g><g class="iso-post"><polygon class="l" points="-234.2,161.2 -230.8,163.1 -230.8,34.4 -234.2,32.5"/><polygon class="r" points="-227.4,161.2 -230.8,163.1 -230.8,34.4 -227.4,32.5"/><polygon class="t" points="-230.8,30.5 -227.4,32.5 -230.8,34.4 -234.2,32.5"/></g><g class="iso-box"><polygon class="l" points="245.4,86.6 263.4,97.0 263.4,73.6 245.4,63.2"/><polygon class="r" points="286.0,84.0 263.4,97.0 263.4,73.6 286.0,60.6"/><polygon class="t" points="267.9,50.2 286.0,60.6 263.4,73.6 245.4,63.2"/></g><g class="iso-post"><polygon class="l" points="50.7,163.1 54.0,165.1 54.0,36.4 50.7,34.4"/><polygon class="r" points="57.4,163.1 54.0,165.1 54.0,36.4 57.4,34.4"/><polygon class="t" points="54.0,32.5 57.4,34.4 54.0,36.4 50.7,34.4"/></g><g class="iso-box"><polygon class="l" points="-200.4,130.8 -173.4,146.4 -173.4,112.6 -200.4,97.0"/><polygon class="r" points="-150.9,133.4 -173.4,146.4 -173.4,112.6 -150.9,99.6"/><polygon class="t" points="-177.9,84.0 -150.9,99.6 -173.4,112.6 -200.4,97.0"/></g><g class="iso-boxa"><polygon class="l" points="-195.9,91.8 -177.9,102.2 -177.9,78.8 -195.9,68.4"/><polygon class="r" points="-155.4,89.2 -177.9,102.2 -177.9,78.8 -155.4,65.8"/><polygon class="t" points="-173.4,55.4 -155.4,65.8 -177.9,78.8 -195.9,68.4"/></g><g class="iso-box"><polygon class="l" points="34.9,178.2 52.9,188.6 52.9,154.8 34.9,144.4"/><polygon class="r" points="75.4,175.6 52.9,188.6 52.9,154.8 75.4,141.8"/><polygon class="t" points="57.4,131.4 75.4,141.8 52.9,154.8 34.9,144.4"/></g><g class="iso-post"><polygon class="l" points="22.5,179.4 25.9,181.3 25.9,52.6 22.5,50.7"/><polygon class="r" points="29.3,179.4 25.9,181.3 25.9,52.6 29.3,50.7"/><polygon class="t" points="25.9,48.7 29.3,50.7 25.9,52.6 22.5,50.7"/></g><g class="iso-post"><polygon class="l" points="307.4,181.3 310.7,183.3 310.7,54.6 307.4,52.6"/><polygon class="r" points="314.1,181.3 310.7,183.3 310.7,54.6 314.1,52.6"/><polygon class="t" points="310.7,50.7 314.1,52.6 310.7,54.6 307.4,52.6"/></g><g class="iso-box"><polygon class="l" points="55.2,148.3 73.2,158.7 73.2,130.1 55.2,119.7"/><polygon class="r" points="95.7,145.7 73.2,158.7 73.2,130.1 95.7,117.1"/><polygon class="t" points="77.7,106.7 95.7,117.1 73.2,130.1 55.2,119.7"/></g><g class="iso-box"><polygon class="l" points="56.3,190.6 74.3,201.0 74.3,182.8 56.3,172.4"/><polygon class="r" points="96.8,188.0 74.3,201.0 74.3,182.8 96.8,169.8"/><polygon class="t" points="78.8,159.4 96.8,169.8 74.3,182.8 56.3,172.4"/></g><g class="iso-post"><polygon class="l" points="-134.0,186.5 -130.6,188.5 -130.6,59.8 -134.0,57.8"/><polygon class="r" points="-127.2,186.5 -130.6,188.5 -130.6,59.8 -127.2,57.8"/><polygon class="t" points="-130.6,55.9 -127.2,57.8 -130.6,59.8 -134.0,57.8"/></g><g class="iso-box"><polygon class="l" points="291.6,196.4 318.6,212.0 318.6,188.6 291.6,173.0"/><polygon class="r" points="341.1,199.0 318.6,212.0 318.6,188.6 341.1,175.6"/><polygon class="t" points="314.1,160.0 341.1,175.6 318.6,188.6 291.6,173.0"/></g><g class="iso-box"><polygon class="l" points="291.6,154.8 309.6,165.2 309.6,136.6 291.6,126.2"/><polygon class="r" points="332.1,152.2 309.6,165.2 309.6,136.6 332.1,123.6"/><polygon class="t" points="314.1,113.2 332.1,123.6 309.6,136.6 291.6,126.2"/></g><g class="iso-box"><polygon class="l" points="291.6,113.2 318.6,128.8 318.6,105.4 291.6,89.8"/><polygon class="r" points="341.1,115.8 318.6,128.8 318.6,105.4 341.1,92.4"/><polygon class="t" points="314.1,76.8 341.1,92.4 318.6,105.4 291.6,89.8"/></g><g class="iso-box"><polygon class="l" points="-149.7,201.6 -131.7,212.0 -131.7,188.6 -149.7,178.2"/><polygon class="r" points="-109.2,199.0 -131.7,212.0 -131.7,188.6 -109.2,175.6"/><polygon class="t" points="-127.2,165.2 -109.2,175.6 -131.7,188.6 -149.7,178.2"/></g><g class="iso-box"><polygon class="l" points="-149.7,160.0 -122.7,175.6 -122.7,157.4 -149.7,141.8"/><polygon class="r" points="-100.2,162.6 -122.7,175.6 -122.7,157.4 -100.2,144.4"/><polygon class="t" points="-127.2,128.8 -100.2,144.4 -122.7,157.4 -149.7,141.8"/></g><g class="iso-box"><polygon class="l" points="75.4,118.4 93.4,128.8 93.4,95.0 75.4,84.6"/><polygon class="r" points="116.0,115.8 93.4,128.8 93.4,95.0 116.0,82.0"/><polygon class="t" points="97.9,71.6 116.0,82.0 93.4,95.0 75.4,84.6"/></g><g class="iso-box"><polygon class="l" points="-149.7,118.4 -131.7,128.8 -131.7,95.0 -149.7,84.6"/><polygon class="r" points="-109.2,115.8 -131.7,128.8 -131.7,95.0 -109.2,82.0"/><polygon class="t" points="-127.2,71.6 -109.2,82.0 -131.7,95.0 -149.7,84.6"/></g><g class="iso-boxa"><polygon class="l" points="76.6,160.7 94.6,171.1 94.6,147.7 76.6,137.3"/><polygon class="r" points="117.1,158.1 94.6,171.1 94.6,147.7 117.1,134.7"/><polygon class="t" points="99.1,124.3 117.1,134.7 94.6,147.7 76.6,137.3"/></g><g class="iso-post"><polygon class="l" points="279.2,197.6 282.6,199.5 282.6,70.8 279.2,68.9"/><polygon class="r" points="286.0,197.6 282.6,199.5 282.6,70.8 286.0,68.9"/><polygon class="t" points="282.6,66.9 286.0,68.9 282.6,70.8 279.2,68.9"/></g><g class="iso-box"><polygon class="l" points="313.0,167.2 331.0,177.6 331.0,149.0 313.0,138.6"/><polygon class="r" points="353.5,164.6 331.0,177.6 331.0,149.0 353.5,136.0"/><polygon class="t" points="335.5,125.6 353.5,136.0 331.0,149.0 313.0,138.6"/></g><g class="iso-post"><polygon class="l" points="-162.1,202.8 -158.7,204.7 -158.7,76.0 -162.1,74.1"/><polygon class="r" points="-155.4,202.8 -158.7,204.7 -158.7,76.0 -155.4,74.1"/><polygon class="t" points="-158.7,72.1 -155.4,74.1 -158.7,76.0 -162.1,74.1"/></g><g class="iso-post"><polygon class="l" points="122.7,204.8 126.1,206.7 126.1,78.0 122.7,76.0"/><polygon class="r" points="129.5,204.8 126.1,206.7 126.1,78.0 129.5,76.0"/><polygon class="t" points="126.1,74.1 129.5,76.0 126.1,78.0 122.7,76.0"/></g><g class="iso-box"><polygon class="l" points="322.0,214.0 340.0,224.4 340.0,206.2 322.0,195.8"/><polygon class="r" points="362.5,211.4 340.0,224.4 340.0,206.2 362.5,193.2"/><polygon class="t" points="344.5,182.8 362.5,193.2 340.0,206.2 322.0,195.8"/></g><g class="iso-box"><polygon class="l" points="322.0,130.8 344.5,143.8 344.5,115.2 322.0,102.2"/><polygon class="r" points="367.0,130.8 344.5,143.8 344.5,115.2 367.0,102.2"/><polygon class="t" points="344.5,89.2 367.0,102.2 344.5,115.2 322.0,102.2"/></g><g class="iso-box"><polygon class="l" points="-119.3,177.6 -101.3,188.0 -101.3,154.2 -119.3,143.8"/><polygon class="r" points="-78.8,175.0 -101.3,188.0 -101.3,154.2 -78.8,141.2"/><polygon class="t" points="-96.8,130.8 -78.8,141.2 -101.3,154.2 -119.3,143.8"/></g><g class="iso-box"><polygon class="l" points="107.0,219.8 125.0,230.2 125.0,206.8 107.0,196.4"/><polygon class="r" points="147.5,217.2 125.0,230.2 125.0,206.8 147.5,193.8"/><polygon class="t" points="129.5,183.4 147.5,193.8 125.0,206.8 107.0,196.4"/></g><g class="iso-box"><polygon class="l" points="107.0,178.2 125.0,188.6 125.0,165.2 107.0,154.8"/><polygon class="r" points="147.5,175.6 125.0,188.6 125.0,165.2 147.5,152.2"/><polygon class="t" points="129.5,141.8 147.5,152.2 125.0,165.2 107.0,154.8"/></g><g class="iso-box"><polygon class="l" points="107.0,136.6 134.0,152.2 134.0,118.4 107.0,102.8"/><polygon class="r" points="156.5,139.2 134.0,152.2 134.0,118.4 156.5,105.4"/><polygon class="t" points="129.5,89.8 156.5,105.4 134.0,118.4 107.0,102.8"/></g><g class="iso-post"><polygon class="l" points="94.6,221.0 97.9,222.9 97.9,94.2 94.6,92.3"/><polygon class="r" points="101.3,221.0 97.9,222.9 97.9,94.2 101.3,92.3"/><polygon class="t" points="97.9,90.3 101.3,92.3 97.9,94.2 94.6,92.3"/></g><g class="iso-post"><polygon class="l" points="379.4,222.9 382.8,224.9 382.8,96.2 379.4,94.2"/><polygon class="r" points="386.2,222.9 382.8,224.9 382.8,96.2 386.2,94.2"/><polygon class="t" points="382.8,92.3 386.2,94.2 382.8,96.2 379.4,94.2"/></g><g class="iso-box"><polygon class="l" points="128.3,232.2 150.9,245.2 150.9,216.6 128.3,203.6"/><polygon class="r" points="173.4,232.2 150.9,245.2 150.9,216.6 173.4,203.6"/><polygon class="t" points="150.9,190.6 173.4,203.6 150.9,216.6 128.3,203.6"/></g><g class="iso-box"><polygon class="l" points="128.3,190.6 146.4,201.0 146.4,182.8 128.3,172.4"/><polygon class="r" points="168.9,188.0 146.4,201.0 146.4,182.8 168.9,169.8"/><polygon class="t" points="150.9,159.4 168.9,169.8 146.4,182.8 128.3,172.4"/></g><g class="iso-post"><polygon class="l" points="-61.9,228.1 -58.5,230.1 -58.5,101.4 -61.9,99.4"/><polygon class="r" points="-55.2,228.1 -58.5,230.1 -58.5,101.4 -55.2,99.4"/><polygon class="t" points="-58.5,97.5 -55.2,99.4 -58.5,101.4 -61.9,99.4"/></g><g class="iso-box"><polygon class="l" points="137.4,154.2 155.4,164.6 155.4,141.2 137.4,130.8"/><polygon class="r" points="177.9,151.6 155.4,164.6 155.4,141.2 177.9,128.2"/><polygon class="t" points="159.9,117.8 177.9,128.2 155.4,141.2 137.4,130.8"/></g><g class="iso-box"><polygon class="l" points="-77.7,243.2 -55.2,256.2 -55.2,232.8 -77.7,219.8"/><polygon class="r" points="-32.6,243.2 -55.2,256.2 -55.2,232.8 -32.6,219.8"/><polygon class="t" points="-55.2,206.8 -32.6,219.8 -55.2,232.8 -77.7,219.8"/></g><g class="iso-post"><polygon class="l" points="351.3,239.2 354.6,241.1 354.6,112.4 351.3,110.5"/><polygon class="r" points="358.0,239.2 354.6,241.1 354.6,112.4 358.0,110.5"/><polygon class="t" points="354.6,108.5 358.0,110.5 354.6,112.4 351.3,110.5"/></g><g class="iso-post"><polygon class="l" points="-90.1,244.4 -86.7,246.3 -86.7,117.6 -90.1,115.7"/><polygon class="r" points="-83.3,244.4 -86.7,246.3 -86.7,117.6 -83.3,115.7"/><polygon class="t" points="-86.7,113.7 -83.3,115.7 -86.7,117.6 -90.1,115.7"/></g><g class="iso-post"><polygon class="l" points="194.8,246.3 198.1,248.3 198.1,119.6 194.8,117.6"/><polygon class="r" points="201.5,246.3 198.1,248.3 198.1,119.6 201.5,117.6"/><polygon class="t" points="198.1,115.7 201.5,117.6 198.1,119.6 194.8,117.6"/></g><g class="iso-shelf"><polygon class="l" points="-288.2,270.4 -247.7,293.8 -247.7,287.3 -288.2,263.9"/><polygon class="r" points="-207.2,270.4 -247.7,293.8 -247.7,287.3 -207.2,263.9"/><polygon class="t" points="-247.7,240.5 -207.2,263.9 -247.7,287.3 -288.2,263.9"/></g><g class="iso-box"><polygon class="l" points="-51.8,258.2 -24.8,273.8 -24.8,245.2 -51.8,229.6"/><polygon class="r" points="-2.3,260.8 -24.8,273.8 -24.8,245.2 -2.3,232.2"/><polygon class="t" points="-29.3,216.6 -2.3,232.2 -24.8,245.2 -51.8,229.6"/></g><g class="iso-box"><polygon class="l" points="-265.7,252.2 -247.7,262.6 -247.7,244.4 -265.7,234.0"/><polygon class="r" points="-229.7,252.2 -247.7,262.6 -247.7,244.4 -229.7,234.0"/><polygon class="t" points="-247.7,223.6 -229.7,234.0 -247.7,244.4 -265.7,234.0"/></g><g class="iso-boxa"><polygon class="l" points="179.0,219.8 206.0,235.4 206.0,206.8 179.0,191.2"/><polygon class="r" points="228.5,222.4 206.0,235.4 206.0,206.8 228.5,193.8"/><polygon class="t" points="201.5,178.2 228.5,193.8 206.0,206.8 179.0,191.2"/></g><g class="iso-boxa"><polygon class="l" points="179.0,178.2 197.0,188.6 197.0,154.8 179.0,144.4"/><polygon class="r" points="219.5,175.6 197.0,188.6 197.0,154.8 219.5,141.8"/><polygon class="t" points="201.5,131.4 219.5,141.8 197.0,154.8 179.0,144.4"/></g><g class="iso-box"><polygon class="l" points="-286.0,263.9 -267.9,274.3 -267.9,256.1 -286.0,245.7"/><polygon class="r" points="-249.9,263.9 -267.9,274.3 -267.9,256.1 -249.9,245.7"/><polygon class="t" points="-267.9,235.3 -249.9,245.7 -267.9,256.1 -286.0,245.7"/></g><g class="iso-post"><polygon class="l" points="166.6,262.6 170.0,264.5 170.0,135.8 166.6,133.9"/><polygon class="r" points="173.4,262.6 170.0,264.5 170.0,135.8 173.4,133.9"/><polygon class="t" points="170.0,131.9 173.4,133.9 170.0,135.8 166.6,133.9"/></g><g class="iso-box"><polygon class="l" points="199.3,273.1 221.8,286.1 221.8,257.5 199.3,244.5"/><polygon class="r" points="244.3,273.1 221.8,286.1 221.8,257.5 244.3,244.5"/><polygon class="t" points="221.8,231.5 244.3,244.5 221.8,257.5 199.3,244.5"/></g><g class="iso-box"><polygon class="l" points="200.4,190.6 227.4,206.2 227.4,172.4 200.4,156.8"/><polygon class="r" points="249.9,193.2 227.4,206.2 227.4,172.4 249.9,159.4"/><polygon class="t" points="222.9,143.8 249.9,159.4 227.4,172.4 200.4,156.8"/></g><g class="iso-post"><polygon class="l" points="10.1,269.7 13.5,271.7 13.5,143.0 10.1,141.0"/><polygon class="r" points="16.9,269.7 13.5,271.7 13.5,143.0 16.9,141.0"/><polygon class="t" points="13.5,139.1 16.9,141.0 13.5,143.0 10.1,141.0"/></g><g class="iso-box"><polygon class="l" points="209.4,237.4 227.4,247.8 227.4,229.6 209.4,219.2"/><polygon class="r" points="249.9,234.8 227.4,247.8 227.4,229.6 249.9,216.6"/><polygon class="t" points="231.9,206.2 249.9,216.6 227.4,229.6 209.4,219.2"/></g><g class="iso-box"><polygon class="l" points="-265.7,275.6 -247.7,286.0 -247.7,267.8 -265.7,257.4"/><polygon class="r" points="-229.7,275.6 -247.7,286.0 -247.7,267.8 -229.7,257.4"/><polygon class="t" points="-247.7,247.0 -229.7,257.4 -247.7,267.8 -265.7,257.4"/></g><g class="iso-boxa"><polygon class="l" points="-5.6,284.8 12.4,295.2 12.4,277.0 -5.6,266.6"/><polygon class="r" points="34.9,282.2 12.4,295.2 12.4,277.0 34.9,264.0"/><polygon class="t" points="16.9,253.6 34.9,264.0 12.4,277.0 -5.6,266.6"/></g><g class="iso-box"><polygon class="l" points="-5.6,243.2 16.9,256.2 16.9,222.4 -5.6,209.4"/><polygon class="r" points="39.4,243.2 16.9,256.2 16.9,222.4 39.4,209.4"/><polygon class="t" points="16.9,196.4 39.4,209.4 16.9,222.4 -5.6,209.4"/></g><g class="iso-box"><polygon class="l" points="-5.6,201.6 12.4,212.0 12.4,183.4 -5.6,173.0"/><polygon class="r" points="34.9,199.0 12.4,212.0 12.4,183.4 34.9,170.4"/><polygon class="t" points="16.9,160.0 34.9,170.4 12.4,183.4 -5.6,173.0"/></g><g class="iso-post"><polygon class="l" points="-18.0,286.0 -14.6,287.9 -14.6,159.2 -18.0,157.3"/><polygon class="r" points="-11.3,286.0 -14.6,287.9 -14.6,159.2 -11.3,157.3"/><polygon class="t" points="-14.6,155.3 -11.3,157.3 -14.6,159.2 -18.0,157.3"/></g><g class="iso-post"><polygon class="l" points="266.8,287.9 270.2,289.9 270.2,161.2 266.8,159.2"/><polygon class="r" points="273.6,287.9 270.2,289.9 270.2,161.2 273.6,159.2"/><polygon class="t" points="270.2,157.3 273.6,159.2 270.2,161.2 266.8,159.2"/></g><g class="iso-boxa"><polygon class="l" points="15.8,297.2 38.3,310.2 38.3,276.4 15.8,263.4"/><polygon class="r" points="60.8,297.2 38.3,310.2 38.3,276.4 60.8,263.4"/><polygon class="t" points="38.3,250.4 60.8,263.4 38.3,276.4 15.8,263.4"/></g><g class="iso-box"><polygon class="l" points="15.8,214.0 33.8,224.4 33.8,195.8 15.8,185.4"/><polygon class="r" points="56.3,211.4 33.8,224.4 33.8,195.8 56.3,182.8"/><polygon class="t" points="38.3,172.4 56.3,182.8 33.8,195.8 15.8,185.4"/></g><g class="iso-boxa"><polygon class="l" points="20.3,258.2 47.3,273.8 47.3,245.2 20.3,229.6"/><polygon class="r" points="69.8,260.8 47.3,273.8 47.3,245.2 69.8,232.2"/><polygon class="t" points="42.8,216.6 69.8,232.2 47.3,245.2 20.3,229.6"/></g><g class="iso-post"><polygon class="l" points="238.7,304.2 242.1,306.1 242.1,177.4 238.7,175.5"/><polygon class="r" points="245.4,304.2 242.1,306.1 242.1,177.4 245.4,175.5"/><polygon class="t" points="242.1,173.5 245.4,175.5 242.1,177.4 238.7,175.5"/></g><g class="iso-shelf"><polygon class="l" points="-191.4,331.5 -150.9,354.9 -150.9,348.4 -191.4,325.0"/><polygon class="r" points="-110.3,331.5 -150.9,354.9 -150.9,348.4 -110.3,325.0"/><polygon class="t" points="-150.9,301.6 -110.3,325.0 -150.9,348.4 -191.4,325.0"/></g><g class="iso-post"><polygon class="l" points="82.2,311.3 85.6,313.3 85.6,184.6 82.2,182.6"/><polygon class="r" points="88.9,311.3 85.6,313.3 85.6,184.6 88.9,182.6"/><polygon class="t" points="85.6,180.7 88.9,182.6 85.6,184.6 82.2,182.6"/></g><g class="iso-box"><polygon class="l" points="-168.9,313.3 -150.9,323.7 -150.9,305.5 -168.9,295.1"/><polygon class="r" points="-132.8,313.3 -150.9,323.7 -150.9,305.5 -132.8,295.1"/><polygon class="t" points="-150.9,284.7 -132.8,295.1 -150.9,305.5 -168.9,295.1"/></g><g class="iso-boxa"><polygon class="l" points="-173.4,304.2 -150.9,317.2 -150.9,299.0 -173.4,286.0"/><polygon class="r" points="-128.3,304.2 -150.9,317.2 -150.9,299.0 -128.3,286.0"/><polygon class="t" points="-150.9,273.0 -128.3,286.0 -150.9,299.0 -173.4,286.0"/></g><g class="iso-boxa"><polygon class="l" points="66.4,326.4 84.4,336.8 84.4,318.6 66.4,308.2"/><polygon class="r" points="107.0,323.8 84.4,336.8 84.4,318.6 107.0,305.6"/><polygon class="t" points="88.9,295.2 107.0,305.6 84.4,318.6 66.4,308.2"/></g><g class="iso-box"><polygon class="l" points="66.4,243.2 93.4,258.8 93.4,230.2 66.4,214.6"/><polygon class="r" points="116.0,245.8 93.4,258.8 93.4,230.2 116.0,217.2"/><polygon class="t" points="88.9,201.6 116.0,217.2 93.4,230.2 66.4,214.6"/></g><g class="iso-box"><polygon class="l" points="-148.6,325.0 -130.6,335.4 -130.6,317.2 -148.6,306.8"/><polygon class="r" points="-112.6,325.0 -130.6,335.4 -130.6,317.2 -112.6,306.8"/><polygon class="t" points="-130.6,296.4 -112.6,306.8 -130.6,317.2 -148.6,306.8"/></g><g class="iso-post"><polygon class="l" points="54.0,327.6 57.4,329.5 57.4,200.8 54.0,198.9"/><polygon class="r" points="60.8,327.6 57.4,329.5 57.4,200.8 60.8,198.9"/><polygon class="t" points="57.4,196.9 60.8,198.9 57.4,200.8 54.0,198.9"/></g><g class="iso-box"><polygon class="l" points="86.7,296.5 109.2,309.5 109.2,286.1 86.7,273.1"/><polygon class="r" points="131.7,296.5 109.2,309.5 109.2,286.1 131.7,273.1"/><polygon class="t" points="109.2,260.1 131.7,273.1 109.2,286.1 86.7,273.1"/></g><g class="iso-box"><polygon class="l" points="-168.9,336.7 -150.9,347.1 -150.9,328.9 -168.9,318.5"/><polygon class="r" points="-132.8,336.7 -150.9,347.1 -150.9,328.9 -132.8,318.5"/><polygon class="t" points="-150.9,308.1 -132.8,318.5 -150.9,328.9 -168.9,318.5"/></g><g class="iso-box"><polygon class="l" points="96.8,260.8 114.8,271.2 114.8,253.0 96.8,242.6"/><polygon class="r" points="137.4,258.2 114.8,271.2 114.8,253.0 137.4,240.0"/><polygon class="t" points="119.3,229.6 137.4,240.0 114.8,253.0 96.8,242.6"/></g><g class="iso-box"><polygon class="l" points="108.1,350.5 126.1,360.9 126.1,337.5 108.1,327.1"/><polygon class="r" points="148.6,347.9 126.1,360.9 126.1,337.5 148.6,324.5"/><polygon class="t" points="130.6,314.1 148.6,324.5 126.1,337.5 108.1,327.1"/></g><g class="iso-post"><polygon class="l" points="154.2,352.9 157.6,354.9 157.6,226.2 154.2,224.2"/><polygon class="r" points="161.0,352.9 157.6,354.9 157.6,226.2 161.0,224.2"/><polygon class="t" points="157.6,222.3 161.0,224.2 157.6,226.2 154.2,224.2"/></g><g class="iso-post"><polygon class="l" points="126.1,369.2 129.5,371.1 129.5,242.4 126.1,240.5"/><polygon class="r" points="132.8,369.2 129.5,371.1 129.5,242.4 132.8,240.5"/><polygon class="t" points="129.5,238.5 132.8,240.5 129.5,242.4 126.1,240.5"/></g><g class="iso-shelf"><polygon class="l" points="-58.5,397.8 -18.0,421.2 -18.0,414.7 -58.5,391.3"/><polygon class="r" points="22.5,397.8 -18.0,421.2 -18.0,414.7 22.5,391.3"/><polygon class="t" points="-18.0,367.9 22.5,391.3 -18.0,414.7 -58.5,391.3"/></g><g class="iso-box"><polygon class="l" points="-36.0,379.6 -18.0,390.0 -18.0,371.8 -36.0,361.4"/><polygon class="r" points="0.0,379.6 -18.0,390.0 -18.0,371.8 0.0,361.4"/><polygon class="t" points="-18.0,351.0 0.0,361.4 -18.0,371.8 -36.0,361.4"/></g><g class="iso-box"><polygon class="l" points="-15.8,391.3 2.3,401.7 2.3,383.5 -15.8,373.1"/><polygon class="r" points="20.3,391.3 2.3,401.7 2.3,383.5 20.3,373.1"/><polygon class="t" points="2.3,362.7 20.3,373.1 2.3,383.5 -15.8,373.1"/></g><g class="iso-box"><polygon class="l" points="-56.3,391.3 -38.3,401.7 -38.3,383.5 -56.3,373.1"/><polygon class="r" points="-20.3,391.3 -38.3,401.7 -38.3,383.5 -20.3,373.1"/><polygon class="t" points="-38.3,362.7 -20.3,373.1 -38.3,383.5 -56.3,373.1"/></g><g class="iso-box"><polygon class="l" points="-36.0,403.0 -18.0,413.4 -18.0,395.2 -36.0,384.8"/><polygon class="r" points="0.0,403.0 -18.0,413.4 -18.0,395.2 0.0,384.8"/><polygon class="t" points="-18.0,374.4 0.0,384.8 -18.0,395.2 -36.0,384.8"/></g><g class="iso-shelf"><polygon class="l" points="42.8,469.3 83.3,492.7 83.3,486.2 42.8,462.8"/><polygon class="r" points="123.8,469.3 83.3,492.7 83.3,486.2 123.8,462.8"/><polygon class="t" points="83.3,439.4 123.8,462.8 83.3,486.2 42.8,462.8"/></g><g class="iso-box"><polygon class="l" points="65.3,451.1 83.3,461.5 83.3,443.3 65.3,432.9"/><polygon class="r" points="101.3,451.1 83.3,461.5 83.3,443.3 101.3,432.9"/><polygon class="t" points="83.3,422.5 101.3,432.9 83.3,443.3 65.3,432.9"/></g><g class="iso-boxa"><polygon class="l" points="60.8,442.0 83.3,455.0 83.3,436.8 60.8,423.8"/><polygon class="r" points="105.8,442.0 83.3,455.0 83.3,436.8 105.8,423.8"/><polygon class="t" points="83.3,410.8 105.8,423.8 83.3,436.8 60.8,423.8"/></g><g class="iso-box"><polygon class="l" points="45.0,462.8 63.0,473.2 63.0,455.0 45.0,444.6"/><polygon class="r" points="81.1,462.8 63.0,473.2 63.0,455.0 81.1,444.6"/><polygon class="t" points="63.0,434.2 81.1,444.6 63.0,455.0 45.0,444.6"/></g><g class="iso-box"><polygon class="l" points="65.3,474.5 83.3,484.9 83.3,466.7 65.3,456.3"/><polygon class="r" points="101.3,474.5 83.3,484.9 83.3,466.7 101.3,456.3"/><polygon class="t" points="83.3,445.9 101.3,456.3 83.3,466.7 65.3,456.3"/></g></svg></div>
+
+<div class="wrap">
+  <nav>
+    <div class="nav-in">
+      <a class="brand" href="#top">rafisa<span>.</span>data</a>
+      <div class="nav-links">
+        <a href="#pipeline">Approach</a>
+        <a href="#experience" class="keep">Experience</a>
+        <a href="#toolkit">Toolkit</a>
+        <a href="#projects">Projects</a>
+        <a href="#contact" class="keep">Contact</a>
+      </div>
+      <div class="progress" id="progress"></div>
+    </div>
+  </nav>
+
+  <header class="hero" id="top">
+    <div>
+      <span class="status"><span class="pulse" aria-hidden="true"></span>Open to Data Scientist roles · Supply Chain</span>
+      <h1>Rafisa<br><span class="grad">Arif Irfan</span></h1>
+      <div class="rotator"><span class="word">Supply Chain Data Scientist</span></div>
+      <p class="intro">I turn store-level sales and stock data into decisions for national retail inventory at Erajaya Swasembada: where stock should go, what Product Managers should buy, and which stores are about to run out. I also built the data foundation behind it, from SAP extraction to a PostgreSQL database, so every analysis starts from clean data.</p>
+      <div class="cta">
+        <a class="btn primary" href="#experience">See my work ↓</a>
+        <button class="btn" id="copy-email" type="button">rafisairfan36@gmail.com</button>
+        <a class="btn" href="https://www.linkedin.com/in/rafirfan/" target="_blank" rel="noopener">LinkedIn ↗</a>
+        <a class="btn" href="https://github.com/Rafisairfan" target="_blank" rel="noopener">GitHub ↗</a>
+      </div>
+    </div>
+    <div class="photo-wrap">
+      <div class="photo-card" id="tilt">
+        <img src="data:image/jpeg;base64,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" alt="Portrait of Rafisa Arif Irfan">
+        <div class="photo-tag">Data → <b>Decisions</b></div>
+      </div>
+    </div>
+  </header>
+
+  <section id="pipeline" class="reveal">
+    <div class="sec-head"><h2>From SAP to stock decisions</h2><span class="label">Click a stage</span></div>
+    <div class="spot pipe">
+      <div class="stages" role="tablist" aria-label="Pipeline stages">
+        <div class="wire" aria-hidden="true"><i></i><i></i><i></i></div>
+        <button class="stage" role="tab" aria-selected="true" data-i="0"><span class="node">SAP</span><span class="txt"><span class="st">01 · SOURCE</span><span class="nm">SAP ERP</span></span></button>
+        <button class="stage" role="tab" aria-selected="false" data-i="1"><span class="node">.py</span><span class="txt"><span class="st">02 · EXTRACT</span><span class="nm">Python RPA</span></span></button>
+        <button class="stage" role="tab" aria-selected="false" data-i="2"><span class="node">PG</span><span class="txt"><span class="st">03 · STORE</span><span class="nm">PostgreSQL</span></span></button>
+        <button class="stage" role="tab" aria-selected="false" data-i="3"><span class="node">f(x)</span><span class="txt"><span class="st">04 · ANALYZE</span><span class="nm">Analysis</span></span></button>
+        <button class="stage" role="tab" aria-selected="false" data-i="4"><span class="node">→◆</span><span class="txt"><span class="st">05 · DECIDE</span><span class="nm">Allocation</span></span></button>
+      </div>
+      <div class="detail" role="tabpanel" id="detail">
+        <span class="k" id="d-k">SOURCE</span>
+        <div><h3 id="d-h">SAP ERP</h3><p id="d-p">Sales, stock and purchase order data for stores across Indonesia lives in SAP. Every analysis starts here.</p></div>
+        <div class="term" id="d-t">$ source <b>● sap</b> · national inventory</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="experience" class="reveal">
+    <div class="sec-head"><h2>Experience</h2><span class="label">2022 → now</span></div>
+    <div class="timeline" id="timeline">
+      <div class="rail"><div class="rail-fill"></div></div>
+
+      <article class="job spot current">
+        <div class="job-top"><h3>Senior Data Analyst, Inventory &amp; Supply Chain<span class="badge">Now</span></h3><span class="when">Jul 2024 – Present</span></div>
+        <div class="org">Erajaya Swasembada</div>
+        <div class="groups">
+          <div class="group"><div class="label">Inventory analytics &amp; decisions</div>
+            <ul>
+              <li>Analyzed nationwide store-level sales and stock to recommend purchase quantities to Product Managers for major global brands.</li>
+              <li>Ran demand-driven stock allocation to retail stores across Indonesia, matching distribution to what each store actually sells.</li>
+              <li>Monitored inventory health through out-of-stock (OOS) and days-of-stock (DOS) metrics to flag stores at risk before they run out or overstock.</li>
+              <li>Tracked active store status dynamically so allocation logic and downstream systems never route stock to closed stores.</li>
+            </ul>
+          </div>
+          <div class="group"><div class="label">Data foundation</div>
+            <ul>
+              <li>Designed and built a centralized PostgreSQL database from scratch as the single source of truth for national inventory analysis.</li>
+              <li>Developed Python-based RPA bots that extract data from SAP and load it into PostgreSQL, scheduled with n8n, replacing manual daily exports.</li>
+              <li>Built reusable Python data transformation tools that became the team's standard daily workflow.</li>
+            </ul>
+          </div>
+          <div class="group"><div class="label">Insight delivery</div>
+            <ul>
+              <li>Designed and maintained three core Tableau dashboards (OOS, DOS, KPI) used by regional teams across Indonesia.</li>
+              <li>Delivered fast, accurate analysis for leadership under tight deadlines, and kept dashboards fast on high-volume data.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="tags"><span class="tag">Inventory analytics</span><span class="tag">Allocation</span><span class="tag">Python</span><span class="tag">SQL</span><span class="tag">PostgreSQL</span><span class="tag">SAP</span><span class="tag">Tableau</span></div>
+      </article>
+
+      <article class="job spot">
+        <div class="job-top"><h3>Data Science Mentor</h3><span class="when">Nov 2023 – Jul 2025</span></div>
+        <div class="org">Cipta Peluang Nusantara</div>
+        <ul>
+          <li>Mentored students in data cleaning and analysis with Excel and Python.</li>
+          <li>Invited speaker at “Sedekah Ilmu” on using data and tools to solve business problems.</li>
+        </ul>
+      </article>
+
+      <article class="job spot">
+        <div class="job-top"><h3>Data Analyst Intern</h3><span class="when">Jun 2023 – Oct 2023</span></div>
+        <div class="org">Multi Bangun Abadi</div>
+        <ul>
+          <li>Built a spreadsheet system that syncs warehouse and finance data and keeps records reconciled.</li>
+          <li>Built a web dashboard for the marketing team to track performance.</li>
+        </ul>
+      </article>
+
+      <article class="job spot">
+        <div class="job-top"><h3>Backend Engineer Intern</h3><span class="when">Sep 2022 – Feb 2023</span></div>
+        <div class="org">Telkom Indonesia</div>
+        <ul>
+          <li>Built web crawlers that collect competitor data daily and store it in a SQL database for comparison analysis.</li>
+          <li>Managed and optimized SQL databases and built dashboards and comparison reports for the team.</li>
+        </ul>
+      </article>
+
+      <article class="job spot">
+        <div class="job-top"><h3>Machine Learning Engineer Intern</h3><span class="when">Jul 2022 – Sep 2022</span></div>
+        <div class="org">Clodeo Indonesia</div>
+        <ul>
+          <li>Designed and trained an LSTM deep learning model that classifies shipping addresses automatically with high accuracy.</li>
+          <li>Cleaned and engineered features on large text datasets, using batch processing to keep training stable.</li>
+        </ul>
+      </article>
+    </div>
+  </section>
+
+  <section id="toolkit" class="reveal">
+    <div class="sec-head"><h2>Toolkit</h2><span class="label">What I reach for</span></div>
+    <div class="bento">
+      <div class="spot b-wide"><h3><span class="ico">SC</span>Supply chain analytics</h3><p>Turning sales and stock history into where stock should go and what to buy next.</p>
+        <div class="tags"><span class="tag">Demand analysis</span><span class="tag">Stock allocation</span><span class="tag">Purchasing recommendations</span><span class="tag">OOS</span><span class="tag">DOS</span><span class="tag">Inventory health</span></div></div>
+      <div class="spot b-mid"><h3><span class="ico">ML</span>Machine learning</h3>
+        <div class="tags"><span class="tag">Scikit-Learn</span><span class="tag">TensorFlow</span><span class="tag">PyTorch</span><span class="tag">LSTM</span><span class="tag">Clustering</span></div></div>
+      <div class="spot b-third"><h3><span class="ico">&lt;/&gt;</span>Languages</h3>
+        <div class="tags"><span class="tag">Python</span><span class="tag">SQL</span><span class="tag">Pandas</span><span class="tag">NumPy</span></div></div>
+      <div class="spot b-third"><h3><span class="ico">DB</span>Data foundation</h3>
+        <div class="tags"><span class="tag">PostgreSQL</span><span class="tag">SAP extraction</span><span class="tag">Python RPA</span><span class="tag">n8n</span><span class="tag">ETL</span></div></div>
+      <div class="spot b-third"><h3><span class="ico">BI</span>Visualization</h3>
+        <div class="tags"><span class="tag">Tableau</span><span class="tag">Looker</span><span class="tag">Excel</span></div></div>
+    </div>
+  </section>
+
+  <section id="projects" class="reveal">
+    <div class="sec-head"><h2>Projects</h2><span class="label">On GitHub</span></div>
+    <div class="projects">
+      <a class="spot proj" href="https://github.com/Rafisairfan/Multilabel-Quranic-Verses-Clasification" target="_blank" rel="noopener"><span class="label">NLP · Thesis</span><h3>Quranic verse classification</h3><p>Multilabel text classification with LSTM and Bi-LSTM.</p><span class="go">View repo <span>↗</span></span></a>
+      <a class="spot proj" href="https://github.com/Rafisairfan/Loan_Loss_Prediction" target="_blank" rel="noopener"><span class="label">Finance · ML</span><h3>Loan loss prediction</h3><p>Predicting loan losses from borrower data.</p><span class="go">View repo <span>↗</span></span></a>
+      <a class="spot proj" href="https://github.com/Rafisairfan/Customer_Segmentation" target="_blank" rel="noopener"><span class="label">Clustering · Retail</span><h3>Customer segmentation</h3><p>Grouping customers by purchasing behavior with K-Means.</p><span class="go">View repo <span>↗</span></span></a>
+    </div>
+  </section>
+
+  <section id="education" class="reveal">
+    <div class="two">
+      <div class="spot"><span class="label">Education</span>
+        <div class="item" style="margin-top:10px"><h3>B.Sc. Computer Science</h3><p>Telkom University · 2019 – 2023 · GPA 3.57/4.00 · finished in 3.5 years</p></div>
+      </div>
+      <div class="spot"><span class="label">Recognition</span>
+        <div class="item" style="margin-top:10px"><h3>Best Applied Technique, 2021</h3><p>National Data Science Competition. Led the team and owned data preparation for the model.</p></div>
+        <div class="item"><h3>Python Certification, 2022</h3></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact" class="reveal">
+    <div class="spot contact">
+      <span class="label">Contact</span>
+      <h2 style="margin-top:12px">Let's predict what <span class="grad">sells next</span>.</h2>
+      <p>Hiring a data scientist for supply chain, retail or inventory? Send me an email.</p>
+      <div class="cta">
+        <button class="btn primary" id="copy-email-2" type="button">Copy rafisairfan36@gmail.com</button>
+        <a class="btn" href="https://www.linkedin.com/in/rafirfan/" target="_blank" rel="noopener">LinkedIn ↗</a>
+        <a class="btn" href="https://github.com/Rafisairfan" target="_blank" rel="noopener">GitHub ↗</a>
+      </div>
+      <span class="toast" id="toast" role="status"></span>
+    </div>
+  </section>
+</div>
+<footer>© 2026 Rafisa Arif Irfan · Jakarta</footer>
+
+<script>
+(function () {
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* Copy email */
+  var email = 'rafisairfan36@gmail.com', toast = document.getElementById('toast');
+  function say(m) { toast.textContent = m; clearTimeout(say.t); say.t = setTimeout(function () { toast.textContent = ''; }, 2400); }
+  function sel(el) { var r = document.createRange(); r.selectNodeContents(el); var s = getSelection(); s.removeAllRanges(); s.addRange(r); say('Selected. Press Ctrl+C to copy'); }
+  ['copy-email', 'copy-email-2'].forEach(function (id) {
+    var b = document.getElementById(id);
+    b.addEventListener('click', function () {
+      try { navigator.clipboard.writeText(email).then(function () { say('Email copied'); var o = b.textContent; b.textContent = 'Copied ✓'; setTimeout(function () { b.textContent = o; }, 1600); }, function () { sel(b); }); }
+      catch (e) { sel(b); }
+    });
+  });
+
+  /* Pipeline tabs */
+  var data = [
+    ['SOURCE', 'SAP ERP', 'Sales, stock and purchase order data for stores across Indonesia lives in SAP. Every analysis starts here.', '$ source <b>● sap</b> · national inventory'],
+    ['EXTRACT', 'Python RPA + n8n', 'Python bots pull SAP reports and clean them into structured tables. n8n runs them on schedule, so fresh data lands every day without manual exports.', '$ n8n workflow <b>● active</b> · daily'],
+    ['STORE', 'PostgreSQL', 'A central database I designed from scratch. One trusted source of store, SKU and stock history to analyze and model on.', '$ psql inventory <b>● connected</b>'],
+    ['ANALYZE', 'Store-level analysis', 'Sales velocity, stock cover (DOS) and out-of-stock risk (OOS) per store and SKU, tracked in three Tableau dashboards used nationwide.', '$ analyze --by store,sku <b>● ready</b>'],
+    ['DECIDE', 'Allocation & purchasing', 'The output is a decision: how much stock each store gets, and how much Product Managers should buy for major global brands.', '$ allocate --demand-driven <b>● shipped</b>']
+  ];
+  var tabs = Array.prototype.slice.call(document.querySelectorAll('.stage'));
+  var dk = document.getElementById('d-k'), dh = document.getElementById('d-h'), dp = document.getElementById('d-p'), dt = document.getElementById('d-t');
+  var auto = null, cur = 0;
+  function show(i) {
+    cur = i;
+    tabs.forEach(function (t, j) { t.setAttribute('aria-selected', j === i ? 'true' : 'false'); });
+    dk.textContent = data[i][0]; dh.textContent = data[i][1]; dp.textContent = data[i][2]; dt.innerHTML = data[i][3];
+  }
+  tabs.forEach(function (t, i) { t.addEventListener('click', function () { clearInterval(auto); auto = null; show(i); }); });
+  if (!reduce) auto = setInterval(function () { show((cur + 1) % data.length); }, 3800);
+
+  /* Spotlight follow */
+  document.querySelectorAll('.spot').forEach(function (el) {
+    el.addEventListener('pointermove', function (e) { var r = el.getBoundingClientRect(); el.style.setProperty('--mx', (e.clientX - r.left) + 'px'); el.style.setProperty('--my', (e.clientY - r.top) + 'px'); });
+  });
+
+  /* Photo tilt */
+  var tilt = document.getElementById('tilt');
+  if (!reduce && matchMedia('(hover: hover)').matches) {
+    tilt.addEventListener('pointermove', function (e) { var r = tilt.getBoundingClientRect(); var x = (e.clientX - r.left) / r.width - .5, y = (e.clientY - r.top) / r.height - .5; tilt.style.transform = 'rotateY(' + (x * 14) + 'deg) rotateX(' + (-y * 14) + 'deg)'; });
+    tilt.addEventListener('pointerleave', function () { tilt.style.transform = ''; });
+  }
+
+  /* Scroll: progress bar, timeline fill, active nav, reveal */
+  var prog = document.getElementById('progress'), tl = document.getElementById('timeline');
+  var links = Array.prototype.slice.call(document.querySelectorAll('.nav-links a'));
+  var secs = links.map(function (a) { return document.querySelector(a.getAttribute('href')); });
+  function onScroll() {
+    var h = document.documentElement, max = h.scrollHeight - innerHeight;
+    prog.style.setProperty('--p', max > 0 ? (scrollY / max).toFixed(4) : 0);
+    var r = tl.getBoundingClientRect(), t = (innerHeight * .6 - r.top) / r.height;
+    tl.style.setProperty('--t', Math.max(0, Math.min(1, t)).toFixed(4));
+    var act = -1; secs.forEach(function (s, i) { if (s && s.getBoundingClientRect().top < innerHeight * .4) act = i; });
+    links.forEach(function (a, i) { a.classList.toggle('active', i === act); });
+  }
+  addEventListener('scroll', onScroll, { passive: true }); addEventListener('resize', onScroll); onScroll();
+
+  if (!reduce && 'IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.remove('pre'); io.unobserve(e.target); } }); }, { rootMargin: '0px 0px -8% 0px' });
+    document.querySelectorAll('.reveal').forEach(function (el) { if (el.getBoundingClientRect().top > innerHeight) { el.classList.add('pre'); io.observe(el); } });
+  }
+
+})();
+</script>
+</body>
+</html>
