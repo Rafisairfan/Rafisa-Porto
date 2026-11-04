@@ -66,15 +66,28 @@ kbd { font-family: var(--mono); font-size: 11px; padding: 2px 6px; border-radius
 
 /* Touch controls */
 .touch { display: none; }
-@media (hover: none) and (pointer: coarse) {
-  .touch { display: block; }
-  .hud-bl { display: none; }
-  #prompt { bottom: calc(190px + env(safe-area-inset-bottom, 0px)); }
-}
-#joy { position: fixed; z-index: 6; left: max(24px, env(safe-area-inset-left, 0px)); bottom: calc(28px + env(safe-area-inset-bottom, 0px)); width: 132px; height: 132px; border-radius: 50%; background: rgba(12,18,28,.55); border: 1px solid var(--line); touch-action: none; }
-#knob { position: absolute; left: 50%; top: 50%; width: 56px; height: 56px; margin: -28px 0 0 -28px; border-radius: 50%; background: rgba(245,165,36,.85); box-shadow: 0 6px 20px rgba(0,0,0,.4); }
-#lift { position: fixed; z-index: 6; right: max(24px, env(safe-area-inset-right, 0px)); bottom: calc(46px + env(safe-area-inset-bottom, 0px)); width: 96px; height: 96px; border-radius: 50%; border: 1px solid rgba(245,165,36,.6); background: rgba(12,18,28,.65); color: var(--amber); font-family: var(--mono); font-weight: 500; font-size: 14px; letter-spacing: .08em; touch-action: none; }
-#lift.ready { background: var(--amber); color: #1a1205; }
+.touch-ui .touch { display: block; }
+.touch-ui .hud-bl { display: none; }
+.touch-ui #prompt { bottom: calc(200px + env(safe-area-inset-bottom, 0px)); font-size: 13px; }
+.pad-label { position: absolute; left: 0; right: 0; bottom: -22px; text-align: center; font-family: var(--mono); font-size: 10.5px; letter-spacing: .14em; color: var(--muted); pointer-events: none; }
+#joy { position: fixed; z-index: 6; left: max(22px, calc(env(safe-area-inset-left, 0px) + 12px)); bottom: calc(40px + env(safe-area-inset-bottom, 0px)); width: 150px; height: 150px; border-radius: 50%; touch-action: none;
+  background: radial-gradient(circle, rgba(22,31,46,.55) 0 45%, rgba(12,18,28,.72) 46% 100%); border: 1.5px solid rgba(160,178,204,.28); box-shadow: inset 0 0 0 10px rgba(255,255,255,.02), 0 12px 30px rgba(0,0,0,.35); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
+#joy .tick { position: absolute; width: 0; height: 0; border: 7px solid transparent; opacity: .55; pointer-events: none; }
+#joy .t-up { left: 50%; top: 9px; margin-left: -7px; border-bottom-color: var(--ink); border-top-width: 0; }
+#joy .t-dn { left: 50%; bottom: 9px; margin-left: -7px; border-top-color: var(--ink); border-bottom-width: 0; }
+#joy .t-lf { top: 50%; left: 9px; margin-top: -7px; border-right-color: var(--ink); border-left-width: 0; }
+#joy .t-rt { top: 50%; right: 9px; margin-top: -7px; border-left-color: var(--ink); border-right-width: 0; }
+#knob { position: absolute; left: 50%; top: 50%; width: 62px; height: 62px; margin: -31px 0 0 -31px; border-radius: 50%; pointer-events: none;
+  background: radial-gradient(circle at 35% 30%, #ffd27a, var(--amber) 55%, #c97e0c); box-shadow: 0 8px 20px rgba(0,0,0,.45), inset 0 -3px 6px rgba(0,0,0,.25); transition: transform .08s; }
+#joy.active { border-color: rgba(245,165,36,.6); }
+#lift { position: fixed; z-index: 6; right: max(26px, calc(env(safe-area-inset-right, 0px) + 14px)); bottom: calc(52px + env(safe-area-inset-bottom, 0px)); width: 112px; height: 112px; border-radius: 50%; touch-action: none; cursor: pointer;
+  border: 1.5px solid rgba(245,165,36,.55); background: rgba(12,18,28,.72); color: var(--amber); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+  display: grid; place-items: center; align-content: center; gap: 2px; font-family: var(--mono); font-weight: 500; font-size: 13px; letter-spacing: .12em; box-shadow: 0 12px 30px rgba(0,0,0,.35); transition: transform .08s, background .2s, color .2s; }
+#lift svg { width: 34px; height: 34px; }
+#lift.ready { background: var(--amber); color: #1a1205; border-color: var(--amber); animation: ready 1.1s ease-in-out infinite; }
+#lift.press { transform: scale(.92); }
+@keyframes ready { 0%, 100% { box-shadow: 0 0 0 0 rgba(245,165,36,.55), 0 12px 30px rgba(0,0,0,.35); } 50% { box-shadow: 0 0 0 14px rgba(245,165,36,0), 0 12px 30px rgba(0,0,0,.35); } }
+@media (orientation: landscape) and (max-height: 500px) { #joy { bottom: calc(22px + env(safe-area-inset-bottom, 0px)); width: 130px; height: 130px; } #lift { bottom: calc(30px + env(safe-area-inset-bottom, 0px)); width: 96px; height: 96px; } .touch-ui #prompt { bottom: calc(24px + env(safe-area-inset-bottom, 0px)); } .touch-ui .hud-tl { display: none; } }
 
 /* Sheet */
 #backdrop { position: fixed; z-index: 9; inset: 0; background: rgba(6, 9, 14, .42); backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); opacity: 0; pointer-events: none; transition: opacity .25s; }
@@ -131,7 +144,6 @@ kbd { font-family: var(--mono); font-size: 11px; padding: 2px 6px; border-radius
   <div class="pips" id="pips"></div>
   <div class="tools">
     <button class="tbtn" id="plain" type="button">Plain CV</button>
-    <a class="tbtn" href="/terminal/" id="sqlLink">SQL CV</a>
     <a class="tbtn" href="/" id="homeLink">Portfolio</a>
   </div>
 </div>
@@ -147,8 +159,8 @@ kbd { font-family: var(--mono); font-size: 11px; padding: 2px 6px; border-radius
 <div id="prompt" class="glass" role="status"></div>
 
 <div class="touch">
-  <div id="joy" aria-label="Drive joystick"><div id="knob"></div></div>
-  <button id="lift" type="button">LIFT</button>
+  <div id="joy" aria-label="Drive joystick"><span class="tick t-up"></span><span class="tick t-dn"></span><span class="tick t-lf"></span><span class="tick t-rt"></span><div id="knob"></div><span class="pad-label">DRIVE</span></div>
+  <button id="lift" type="button" aria-label="Lift pallet"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V7"/><path d="M7 11l5-5 5 5"/><path d="M5 21h14"/></svg>LIFT</button>
 </div>
 
 <div id="backdrop" aria-hidden="true"></div>
@@ -167,8 +179,8 @@ kbd { font-family: var(--mono); font-size: 11px; padding: 2px 6px; border-radius
     <h2>Welcome to <span>Rafisa's</span> warehouse.</h2>
     <p>I spend my days moving inventory data from SAP to decisions. Here you move the pallets. Each one holds a part of my CV.</p>
     <ul>
-      <li>Drive the forklift to a glowing pallet</li>
-      <li>Lift it to read that section</li>
+      <li id="howDrive">Drive the forklift to a glowing pallet</li>
+      <li id="howLift">Lift it to read that section</li>
       <li>Lift all 5 to clear the warehouse</li>
     </ul>
     <div class="row">
@@ -283,7 +295,7 @@ kbd { font-family: var(--mono); font-size: 11px; padding: 2px 6px; border-radius
   $('winClose').onclick = function () { win.hidden = true; };
   $('winContact').onclick = function () { win.hidden = true; openSheet(4, false); };
   // Links only make sense on the portfolio site; hide them inside a claude.ai artifact.
-  if (location.hostname.indexOf('vercel.app') < 0 && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') { $('sqlLink').hidden = true; $('homeLink').hidden = true; }
+  if (location.hostname.indexOf('vercel.app') < 0 && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') { $('homeLink').hidden = true; }
 
   if (typeof THREE === 'undefined' || !(function () { try { var c = document.createElement('canvas'); return !!(c.getContext('webgl') || c.getContext('experimental-webgl')); } catch (e) { return false; } })()) {
     $('err').style.display = 'grid'; intro.hidden = true; return;
@@ -521,10 +533,14 @@ kbd { font-family: var(--mono); font-size: 11px; padding: 2px 6px; border-radius
   addEventListener('keyup', function (e) { keys[e.key.toLowerCase()] = false; });
   addEventListener('blur', function () { keys = {}; });
   var joy = { x: 0, y: 0, id: null };
+  var isTouch = matchMedia('(pointer: coarse)').matches || navigator.maxTouchPoints > 0 || 'ontouchstart' in window;
+  function enableTouchUI() { if (document.documentElement.classList.contains('touch-ui')) return; document.documentElement.classList.add('touch-ui'); $('howDrive').textContent = 'Drag the joystick to drive to a glowing pallet'; $('howLift').textContent = 'Tap LIFT to pick it up and read that section'; }
+  if (isTouch) enableTouchUI();
+  addEventListener('touchstart', enableTouchUI, { once: true, passive: true });
   var joyEl = $('joy'), knob = $('knob');
-  joyEl.addEventListener('pointerdown', function (e) { joy.id = e.pointerId; joyEl.setPointerCapture(e.pointerId); moveJoy(e); });
+  joyEl.addEventListener('pointerdown', function (e) { e.preventDefault(); joy.id = e.pointerId; joyEl.setPointerCapture(e.pointerId); joyEl.classList.add('active'); moveJoy(e); });
   joyEl.addEventListener('pointermove', function (e) { if (e.pointerId === joy.id) moveJoy(e); });
-  function endJoy() { joy.id = null; joy.x = joy.y = 0; knob.style.transform = ''; }
+  function endJoy() { joy.id = null; joy.x = joy.y = 0; knob.style.transform = ''; joyEl.classList.remove('active'); }
   joyEl.addEventListener('pointerup', endJoy); joyEl.addEventListener('pointercancel', endJoy);
   function moveJoy(e) {
     var r = joyEl.getBoundingClientRect(), cx = r.left + r.width / 2, cy = r.top + r.height / 2, max = r.width / 2 - 20;
@@ -533,14 +549,25 @@ kbd { font-family: var(--mono); font-size: 11px; padding: 2px 6px; border-radius
     knob.style.transform = 'translate(' + dx + 'px,' + dy + 'px)';
     joy.x = dx / max; joy.y = dy / max;
   }
-  $('lift').addEventListener('click', function () { if (playing && !sheetOpen) tryLift(); });
+  var liftBtn = $('lift');
+  function pressLift() { if (!playing || sheetOpen) return; if (near) { if (navigator.vibrate) try { navigator.vibrate(25); } catch (x) {} tryLift(); } else { promptEl.innerHTML = 'Drive closer to a glowing pallet first'; promptEl.classList.add('show'); hintUntil = t + 1.6; } }
+  liftBtn.addEventListener('pointerdown', function (e) { e.preventDefault(); liftBtn.classList.add('press'); pressLift(); });
+  ['pointerup', 'pointercancel', 'pointerleave'].forEach(function (ev) { liftBtn.addEventListener(ev, function () { liftBtn.classList.remove('press'); }); });
+  liftBtn.addEventListener('click', function (e) { if (e.detail === 0) pressLift(); });
 
   /* ---------------- Game logic ---------------- */
   var near = null;
   function forkTip() { return new THREE.Vector3(car.x + Math.sin(car.heading) * 2.0, 0, car.z + Math.cos(car.heading) * 2.0); }
   function findNear() {
     var tip = forkTip(), best = null, bd = 2.5;
-    pallets.forEach(function (p) { if (p.done) return; var d = tip.distanceTo(p.pos); if (d < bd) { bd = d; best = p; } });
+    pallets.forEach(function (p) {
+      if (p.done) return;
+      // distance from the pallet to the fork line (from the mast to just past the fork tips)
+      var hx = Math.sin(car.heading), hz = Math.cos(car.heading), px = p.pos.x - car.x, pz = p.pos.z - car.z;
+      var along = Math.max(.8, Math.min(3.2, px * hx + pz * hz));
+      var d = Math.hypot(px - hx * along, pz - hz * along);
+      if (px * hx + pz * hz > 0 && d < bd) { bd = d; best = p; }
+    });
     return best;
   }
   function tryLift() {
@@ -585,12 +612,14 @@ kbd { font-family: var(--mono); font-size: 11px; padding: 2px 6px; border-radius
       var lx = dx * c + dz * s, lz = -dx * s + dz * c;
       if (Math.abs(lx) < o.hw + r && Math.abs(lz) < o.hd + r) return true;
     }
+    // pallets still on the floor block the forklift, so it stops with its forks at the pallet
+    for (var q = 0; q < pallets.length; q++) { var pp = pallets[q]; if (!pp.done && car.carrying !== pp && Math.hypot(nx - pp.pos.x, nz - pp.pos.z) < 1.95) return true; }
     return false;
   }
 
   /* ---------------- Loop ---------------- */
   var camPos = new THREE.Vector3(0, 9, 16), camLook = new THREE.Vector3();
-  var clock = new THREE.Clock(), t = 0, turnInput = 0;
+  var clock = new THREE.Clock(), t = 0, turnInput = 0, hintUntil = 0;
   function resize() { var w = innerWidth, h = innerHeight; renderer.setSize(w, h, false); camera.aspect = w / h; camera.fov = w < 700 ? 66 : 55; camera.updateProjectionMatrix(); }
   addEventListener('resize', resize); resize();
 
@@ -651,8 +680,8 @@ kbd { font-family: var(--mono); font-size: 11px; padding: 2px 6px; border-radius
     }
     // prompt
     near = (playing && !sheetOpen && !car.carrying) ? findNear() : null;
-    if (near) { promptEl.innerHTML = 'Press <b>E</b> or tap <b>LIFT</b> · ' + SECTIONS[near.i].title; promptEl.classList.add('show'); $('lift').classList.add('ready'); }
-    else { promptEl.classList.remove('show'); $('lift').classList.remove('ready'); }
+    if (near) { promptEl.innerHTML = (document.documentElement.classList.contains('touch-ui') ? 'Tap <b>LIFT</b> · ' : 'Press <b>E</b> to lift · ') + SECTIONS[near.i].title; promptEl.classList.add('show'); $('lift').classList.add('ready'); }
+    else { if (t > hintUntil) promptEl.classList.remove('show'); $('lift').classList.remove('ready'); }
 
     // particles
     for (var k = parts.length - 1; k >= 0; k--) {
@@ -663,7 +692,7 @@ kbd { font-family: var(--mono); font-size: 11px; padding: 2px 6px; border-radius
     }
 
     // camera follow
-    var back = playing ? 9 : 14, up = playing ? 5.6 : 11;
+    var portrait = camera.aspect < 1, back = playing ? (portrait ? 11.5 : 9) : 14, up = playing ? (portrait ? 7.2 : 5.6) : 11;
     var desired = new THREE.Vector3(car.x - Math.sin(car.heading) * back, up, car.z - Math.cos(car.heading) * back);
     if (!playing) { desired.set(Math.sin(t * .15) * 17, 8.6, Math.cos(t * .15) * 15); }
     desired.x = Math.max(-W / 2 + 1.2, Math.min(W / 2 - 1.2, desired.x)); desired.z = Math.max(-D / 2 + 1.2, Math.min(D / 2 - 1.2, desired.z)); desired.y = Math.min(H - .8, desired.y);
