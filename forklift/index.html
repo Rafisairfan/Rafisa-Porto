@@ -286,20 +286,23 @@ kbd { font-family: var(--mono); font-size: 11px; padding: 2px 6px; border-radius
 
   /* ---------------- Three.js scene ---------------- */
   var canvas = $('scene');
-  var renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-  renderer.shadowMap.enabled = true;
+  // Software renderers (no GPU) get a lighter scene so the game stays playable
+  var lowGfx = (function () { try { var g = document.createElement('canvas').getContext('webgl'); var e = g && g.getExtension('WEBGL_debug_renderer_info'); var r = e ? String(g.getParameter(e.UNMASKED_RENDERER_WEBGL)) : ''; return /swiftshader|basic render|llvmpipe|software|softpipe/i.test(r); } catch (x) { return false; } })();
+  var renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: !lowGfx, powerPreference: 'high-performance' });
+  var coarse = matchMedia('(pointer: coarse)').matches;
+  renderer.setPixelRatio(lowGfx ? Math.min(window.devicePixelRatio || 1, 1) * .75 : Math.min(window.devicePixelRatio || 1, coarse ? 1.5 : 2));
+  renderer.shadowMap.enabled = !lowGfx;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   renderer.outputEncoding = THREE.sRGBEncoding;
   var scene = new THREE.Scene();
   scene.background = new THREE.Color(0x0b1018);
-  scene.fog = new THREE.Fog(0x0b1018, 34, 70);
+  scene.fog = new THREE.Fog(0x1a2130, 40, 80);
   var camera = new THREE.PerspectiveCamera(55, 1, 0.1, 200);
 
-  scene.add(new THREE.HemisphereLight(0xcfe3ff, 0x1a1408, 0.75));
+  scene.add(new THREE.HemisphereLight(0xdbe8ff, 0x2a2214, 0.95));
   var sun = new THREE.DirectionalLight(0xfff1dc, 0.95);
-  sun.position.set(14, 26, 10); sun.castShadow = true;
-  sun.shadow.mapSize.set(2048, 2048);
+  sun.position.set(14, 26, 10); sun.castShadow = !lowGfx;
+  sun.shadow.mapSize.set(coarse ? 1024 : 2048, coarse ? 1024 : 2048);
   var sc = sun.shadow.camera; sc.left = -34; sc.right = 34; sc.top = 30; sc.bottom = -30; sc.near = 1; sc.far = 80;
   scene.add(sun);
 
@@ -324,13 +327,36 @@ kbd { font-family: var(--mono); font-size: 11px; padding: 2px 6px; border-radius
   for (var dz = -14; dz <= 14; dz += 2) { if (Math.abs(dz) > 3) { /* hatch */ } }
   // walls
   var wallMat = mat(0x2a3343, { r: .9 });
-  box(W, 6, .4, wallMat, 0, 3, -D / 2); box(W, 6, .4, wallMat, 0, 3, D / 2); box(.4, 6, D, wallMat, -W / 2, 3, 0); box(.4, 6, D, wallMat, W / 2, 3, 0);
+  var H = 10.5;
+  box(W, H, .4, wallMat, 0, H / 2, -D / 2); box(W, H, .4, wallMat, 0, H / 2, D / 2); box(.4, H, D, wallMat, -W / 2, H / 2, 0); box(.4, H, D, wallMat, W / 2, H / 2, 0);
+  // ceiling + roof trusses + clerestory windows: an enclosed room
+  var ceil = new THREE.Mesh(new THREE.PlaneGeometry(W, D), mat(0x232b38, { r: .95 }));
+  ceil.rotation.x = Math.PI / 2; ceil.position.y = H; ceil.receiveShadow = true; scene.add(ceil);
+  var trussMat = mat(0x3a4456, { r: .6, m: .4 });
+  for (var tz = -D / 2 + 4; tz < D / 2; tz += 6) { var tr = box(W, .35, .3, trussMat, 0, H - .25, tz); tr.castShadow = false; }
+  for (var tx = -W / 2 + 7; tx < W / 2; tx += 14) { var tr2 = box(.25, .25, D, trussMat, tx, H - .55, 0); tr2.castShadow = false; }
+  var winMat = mat(0x9fc7ff, { e: 0x7fb2ff, ei: .55, r: .2 });
+  for (var wx = -W / 2 + 5; wx < W / 2 - 3; wx += 7) { if (Math.abs(wx) > 7) box(4.2, 1.2, .1, winMat, wx, H - 1.6, -D / 2 + .25).castShadow = false; box(4.2, 1.2, .1, winMat, wx, H - 1.6, D / 2 - .25).castShadow = false; }
+  for (var wz = -D / 2 + 5; wz < D / 2 - 3; wz += 7) { box(.1, 1.2, 4.2, winMat, -W / 2 + .25, H - 1.6, wz).castShadow = false; box(.1, 1.2, 4.2, winMat, W / 2 - .25, H - 1.6, wz).castShadow = false; }
+  // signage on the back wall
+  (function () {
+    var c = document.createElement('canvas'); c.width = 1024; c.height = 180; var g = c.getContext('2d');
+    g.fillStyle = '#f5a524'; g.fillRect(0, 0, 1024, 180); g.fillStyle = '#141a24';
+    g.font = '800 92px "Bricolage Grotesque", "Segoe UI", sans-serif'; g.textAlign = 'center'; g.fillText("RAFISA'S WAREHOUSE", 512, 120);
+    var tx2 = new THREE.CanvasTexture(c); tx2.encoding = THREE.sRGBEncoding;
+    var sign = new THREE.Mesh(new THREE.PlaneGeometry(12, 2.1), new THREE.MeshStandardMaterial({ map: tx2, roughness: .6 }));
+    sign.position.set(0, H - 1.6, -D / 2 + .25); scene.add(sign);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { g.fillStyle = '#f5a524'; g.fillRect(0, 0, 1024, 180); g.fillStyle = '#141a24'; g.font = '800 92px "Bricolage Grotesque", "Segoe UI", sans-serif'; g.fillText("RAFISA'S WAREHOUSE", 512, 120); tx2.needsUpdate = true; });
+  })();
   // wall stripe
   var stripe = mat(0xf5a524, { r: .6 });
   box(W, .35, .45, stripe, 0, 1.1, -D / 2 + .05); box(.45, .35, D, stripe, -W / 2 + .05, 1.1, 0); box(.45, .35, D, stripe, W / 2 - .05, 1.1, 0);
   // ceiling lamps (emissive bars)
   var lampMat = mat(0xfff6e0, { e: 0xfff1cc, ei: 1.2 });
-  for (var lx = -18; lx <= 18; lx += 12) for (var lz = -12; lz <= 12; lz += 12) box(5, .15, .5, lampMat, lx, 9, lz).castShadow = false;
+  for (var lx = -18; lx <= 18; lx += 12) for (var lz = -12; lz <= 12; lz += 12) {
+    box(5, .15, .5, lampMat, lx, H - 1.6, lz).castShadow = false;
+    box(.04, 1.2, .04, trussMat, lx - 2, H - 1, lz).castShadow = false; box(.04, 1.2, .04, trussMat, lx + 2, H - 1, lz).castShadow = false;
+  }
   // loading dock door
   box(10, 4.5, .2, mat(0x5b6577, { r: .7, m: .3 }), 0, 2.25, -D / 2 + .3);
   for (var s = 0; s < 9; s++) box(10, .06, .22, mat(0x48505f), 0, .4 + s * .5, -D / 2 + .42);
@@ -374,7 +400,7 @@ kbd { font-family: var(--mono); font-size: 11px; padding: 2px 6px; border-radius
       for (var bx = -w / 2 + .5; bx < w / 2 - .6;) {
         var bw = .7 + Math.random() * .6, bh = .5 + Math.random() * .7;
         if (bx + bw > w / 2 - .2) break;
-        if (Math.random() < .85) box(bw, bh, d - .3, cardboard[(Math.random() * 4) | 0], bx + bw / 2, y + .15 + bh / 2, 0, group);
+        if (Math.random() < .85) box(bw, bh, d - .3, cardboard[(Math.random() * 4) | 0], bx + bw / 2, y + .15 + bh / 2, 0, group).castShadow = false;
         bx += bw + .12;
       }
     });
@@ -422,8 +448,11 @@ kbd { font-family: var(--mono); font-size: 11px; padding: 2px 6px; border-radius
   box(1.45, .6, .7, dark, 0, .8, -1.25, fork);             // counterweight
   box(1.1, .12, .9, dark, 0, 1.15, -.35, fork);            // seat base
   box(.9, .5, .15, dark, 0, 1.45, -.75, fork);             // seat back
-  [[-.65, .65], [.65, .65], [-.65, -.85], [.65, -.85]].forEach(function (p) { box(.08, 1.6, .08, dark, p[0], 1.9, p[1] - .2, fork); });
-  box(1.45, .08, 1.65, dark, 0, 2.7, -.3, fork);           // roof
+  [[-.65, .65], [.65, .65], [-.65, -.85], [.65, -.85]].forEach(function (p) { box(.08, 1.85, .08, dark, p[0], 2.02, p[1] - .2, fork); });
+  // open overhead guard (bars, so the driver stays visible)
+  box(1.45, .08, .08, dark, 0, 2.95, .45, fork); box(1.45, .08, .08, dark, 0, 2.95, -1.05, fork);
+  box(.08, .08, 1.58, dark, -.68, 2.95, -.3, fork); box(.08, .08, 1.58, dark, .68, 2.95, -.3, fork);
+  [-.35, 0, .35].forEach(function (x) { box(.05, .05, 1.5, dark, x, 2.95, -.3, fork); });
   box(.06, .5, .06, dark, .3, 1.4, .3, fork);              // steering column
   var wheelGeo = new THREE.CylinderGeometry(.36, .36, .3, 18); wheelGeo.rotateZ(Math.PI / 2);
   var wheels = [];
@@ -433,7 +462,38 @@ kbd { font-family: var(--mono); font-size: 11px; padding: 2px 6px; border-radius
   var carriage = new THREE.Group(); carriage.position.set(0, 0, 1.1); fork.add(carriage);
   box(1.2, .55, .08, dark, 0, .45, 0, carriage);
   box(.14, .06, 1.3, steel, -.38, .2, .65, carriage); box(.14, .06, 1.3, steel, .38, .2, .65, carriage);
-  var beacon = box(.18, .14, .18, mat(0xff8a1a, { e: 0xff7a00, ei: 1.5 }), 0, 2.82, -.6, fork); beacon.castShadow = false;
+  var beacon = box(.18, .14, .18, mat(0xff8a1a, { e: 0xff7a00, ei: 1.5 }), 0, 3.06, -.9, fork); beacon.castShadow = false;
+  // Driver: Rafisa, with glasses, a plain sweater and black trousers
+  var driver = new THREE.Group(); driver.position.set(0, 1.21, -.4); fork.add(driver);
+  var skin = mat(0xc99a72, { r: .7 }), hair = mat(0x15110e, { r: .8 }), sweater = mat(0x4b5a6e, { r: .95 }), pants = mat(0x141518, { r: .9 }), frame = mat(0x0a0a0a, { r: .3, m: .4 }), shoe = mat(0x2a2522, { r: .8 });
+  box(.66, .2, .62, pants, 0, .1, .05, driver);                           // seat / hips
+  box(.24, .18, .62, pants, -.17, .14, .42, driver); box(.24, .18, .62, pants, .17, .14, .42, driver); // thighs
+  box(.2, .5, .2, pants, -.17, -.12, .72, driver); box(.2, .5, .2, pants, .17, -.12, .72, driver);       // shins
+  box(.22, .12, .32, shoe, -.17, -.4, .8, driver); box(.22, .12, .32, shoe, .17, -.4, .8, driver);        // shoes
+  box(.66, .72, .42, sweater, 0, .56, -.02, driver);                       // torso
+  box(.7, .14, .44, sweater, 0, .87, -.02, driver);                        // shoulders
+  box(.3, .08, .3, sweater, 0, .96, -.02, driver);                         // collar
+  var armL = new THREE.Group(), armR = new THREE.Group(); armL.position.set(-.42, .82, -.02); armR.position.set(.42, .82, -.02); driver.add(armL); driver.add(armR);
+  [armL, armR].forEach(function (a, k) { box(.17, .17, .52, sweater, 0, -.12, .24, a); box(.15, .15, .4, sweater, k ? -.08 : .08, -.2, .62, a); box(.13, .12, .14, skin, k ? -.12 : .12, -.22, .86, a); a.rotation.x = .35; });
+  box(.14, .1, .14, skin, 0, 1.03, -.02, driver);                          // neck
+  var head = new THREE.Group(); head.position.set(0, 1.25, 0); driver.add(head);
+  box(.42, .46, .42, skin, 0, 0, 0, head);                                  // face
+  box(.46, .16, .46, hair, 0, .24, -.02, head);                              // hair top
+  box(.46, .3, .1, hair, 0, .08, -.2, head);                                 // hair back
+  box(.06, .22, .4, hair, -.22, .1, -.02, head); box(.06, .22, .4, hair, .22, .1, -.02, head); // sides
+  box(.44, .08, .1, hair, 0, .2, .19, head);                                 // fringe
+  // glasses: two rims, bridge, temples
+  [-.1, .1].forEach(function (x) {
+    box(.15, .025, .02, frame, x, .07, .225, head); box(.15, .025, .02, frame, x, -.04, .225, head);
+    box(.025, .13, .02, frame, x - .075, .015, .225, head); box(.025, .13, .02, frame, x + .075, .015, .225, head);
+    var lens = new THREE.Mesh(new THREE.PlaneGeometry(.13, .1), new THREE.MeshStandardMaterial({ color: 0xbfe3ff, transparent: true, opacity: .28, roughness: .1, metalness: .2 })); lens.position.set(x, .015, .232); head.add(lens);
+  });
+  box(.06, .02, .02, frame, 0, .05, .228, head);
+  box(.02, .02, .22, frame, -.215, .06, .12, head); box(.02, .02, .22, frame, .215, .06, .12, head);
+  box(.03, .03, .02, mat(0x1a1210), -.1, .02, .212, head).castShadow = false; box(.03, .03, .02, mat(0x1a1210), .1, .02, .212, head).castShadow = false; // eyes
+  box(.12, .02, .02, mat(0x8a4a3a), 0, -.12, .213, head).castShadow = false; // smile
+  // steering wheel
+  var wheelRing = new THREE.Mesh(new THREE.TorusGeometry(.2, .03, 8, 20), dark); wheelRing.position.set(0, 1.68, .32); wheelRing.rotation.x = -1.1; fork.add(wheelRing);
   var headlight = new THREE.SpotLight(0xfff4d6, 1.1, 16, .55, .5, 1.2); headlight.position.set(0, 1.4, 1.2); fork.add(headlight);
   var hlTarget = new THREE.Object3D(); hlTarget.position.set(0, 0, 7); fork.add(hlTarget); headlight.target = hlTarget;
 
@@ -474,7 +534,7 @@ kbd { font-family: var(--mono); font-size: 11px; padding: 2px 6px; border-radius
   var near = null;
   function forkTip() { return new THREE.Vector3(car.x + Math.sin(car.heading) * 2.0, 0, car.z + Math.cos(car.heading) * 2.0); }
   function findNear() {
-    var tip = forkTip(), best = null, bd = 1.9;
+    var tip = forkTip(), best = null, bd = 2.5;
     pallets.forEach(function (p) { if (p.done) return; var d = tip.distanceTo(p.pos); if (d < bd) { bd = d; best = p; } });
     return best;
   }
@@ -525,12 +585,21 @@ kbd { font-family: var(--mono); font-size: 11px; padding: 2px 6px; border-radius
 
   /* ---------------- Loop ---------------- */
   var camPos = new THREE.Vector3(0, 9, 16), camLook = new THREE.Vector3();
-  var clock = new THREE.Clock(), t = 0;
+  var clock = new THREE.Clock(), t = 0, turnInput = 0;
   function resize() { var w = innerWidth, h = innerHeight; renderer.setSize(w, h, false); camera.aspect = w / h; camera.fov = w < 700 ? 66 : 55; camera.updateProjectionMatrix(); }
   addEventListener('resize', resize); resize();
 
+  var fpsFrames = 0, fpsTime = 0, downgraded = lowGfx;
+  function downgrade() {
+    downgraded = true;
+    renderer.setPixelRatio(Math.max(.6, renderer.getPixelRatio() * .7));
+    renderer.shadowMap.enabled = false; sun.castShadow = false;
+    scene.traverse(function (o) { if (o.material) { (Array.isArray(o.material) ? o.material : [o.material]).forEach(function (m) { m.needsUpdate = true; }); } });
+    resize();
+  }
   function step() {
-    var dt = Math.min(clock.getDelta(), .05); t += dt;
+    var raw = clock.getDelta(), dt = Math.min(raw, .1); t += dt;
+    if (!downgraded && t > 1) { fpsFrames++; fpsTime += raw; if (fpsTime > 2.5) { if (fpsFrames / fpsTime < 28) downgrade(); else downgraded = true; } }
     var thr = 0, steer = 0;
     if (playing && !sheetOpen) {
       if (keys.w || keys.arrowup) thr += 1;
@@ -541,7 +610,8 @@ kbd { font-family: var(--mono); font-size: 11px; padding: 2px 6px; border-radius
     }
     thr = Math.max(-1, Math.min(1, thr)); steer = Math.max(-1, Math.min(1, steer));
     var maxV = 9;
-    car.v += (thr * maxV - car.v) * Math.min(1, dt * (thr ? 2.2 : 3.2));
+    car.v += (thr * maxV - car.v) * Math.min(1, dt * (thr ? 2.2 : 5.5));
+    turnInput += (steer - turnInput) * Math.min(1, dt * 8);
     var turn = steer * dt * (1.2 + Math.min(Math.abs(car.v), 6) * .28) * (car.v < -0.2 ? -1 : 1);
     car.heading += turn;
     var nx = car.x + Math.sin(car.heading) * car.v * dt, nz = car.z + Math.cos(car.heading) * car.v * dt;
@@ -554,6 +624,10 @@ kbd { font-family: var(--mono); font-size: 11px; padding: 2px 6px; border-radius
     car.liftY += (car.liftTarget - car.liftY) * Math.min(1, dt * 4);
     carriage.position.y = car.liftY;
     beacon.material.emissiveIntensity = 1 + Math.sin(t * 8) * .9;
+    head.rotation.y += ((-turnInput * .45) - head.rotation.y) * Math.min(1, dt * 5);
+    head.position.y = 1.25 + Math.sin(t * 2) * .01 + (Math.abs(car.v) > .5 ? Math.sin(t * 18) * .008 : 0);
+    wheelRing.rotation.z = -turnInput * 1.2;
+    armL.rotation.z = turnInput * .25; armR.rotation.z = turnInput * .25;
 
     // markers
     pallets.forEach(function (p) {
@@ -566,8 +640,8 @@ kbd { font-family: var(--mono); font-size: 11px; padding: 2px 6px; border-radius
     pallets.forEach(function (p) { if (!p.done) { var d = Math.hypot(p.pos.x - car.x, p.pos.z - car.z); if (d < td) { td = d; target = p; } } });
     arrow.visible = !!target && td > 3.2 && !car.carrying;
     if (target) {
-      arrow.position.set(car.x, 3.4 + Math.sin(t * 4) * .12, car.z);
-      arrow.lookAt(target.pos.x, 3.4, target.pos.z);
+      arrow.position.set(car.x, 3.9 + Math.sin(t * 4) * .12, car.z);
+      arrow.lookAt(target.pos.x, 3.9, target.pos.z);
       arrow.material.color.setHex(SECTIONS[target.i].color);
     }
     // prompt
@@ -584,18 +658,23 @@ kbd { font-family: var(--mono); font-size: 11px; padding: 2px 6px; border-radius
     }
 
     // camera follow
-    var back = playing ? 10.5 : 14, up = playing ? 8.2 : 11;
+    var back = playing ? 9 : 14, up = playing ? 5.6 : 11;
     var desired = new THREE.Vector3(car.x - Math.sin(car.heading) * back, up, car.z - Math.cos(car.heading) * back);
-    if (!playing) { desired.set(Math.sin(t * .15) * 20, 15, Math.cos(t * .15) * 20); }
+    if (!playing) { desired.set(Math.sin(t * .15) * 17, 8.6, Math.cos(t * .15) * 15); }
+    desired.x = Math.max(-W / 2 + 1.2, Math.min(W / 2 - 1.2, desired.x)); desired.z = Math.max(-D / 2 + 1.2, Math.min(D / 2 - 1.2, desired.z)); desired.y = Math.min(H - .8, desired.y);
     camPos.lerp(desired, Math.min(1, dt * (playing ? 3 : 1)));
     camera.position.copy(camPos);
-    var look = playing ? new THREE.Vector3(car.x + Math.sin(car.heading) * 3, 1.2, car.z + Math.cos(car.heading) * 3) : new THREE.Vector3(0, 0, 0);
+    var look = playing ? new THREE.Vector3(car.x + Math.sin(car.heading) * 4, 2.2, car.z + Math.cos(car.heading) * 4) : new THREE.Vector3(0, 0, 0);
     camLook.lerp(look, Math.min(1, dt * 5));
     camera.lookAt(camLook);
     renderer.render(scene, camera);
     requestAnimationFrame(step);
   }
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { labels.forEach(function (L) { L.draw(); }); });
+  // static geometry never moves: skip per-frame matrix updates for it
+  scene.traverse(function (o) { if (o.isMesh && o.parent && o !== arrow && !isDynamic(o)) { o.updateMatrix(); o.matrixAutoUpdate = false; } });
+  function isDynamic(o) { for (var p = o; p; p = p.parent) { if (p === fork) return true; } return pallets.some(function (q) { return q.group === o || q.ring === o || q.beam === o || isChild(o, q.group); }); }
+  function isChild(o, g) { for (var p = o; p; p = p.parent) if (p === g) return true; return false; }
   camera.position.copy(camPos); camera.lookAt(0, 0, 0);
   requestAnimationFrame(step);
 })();
