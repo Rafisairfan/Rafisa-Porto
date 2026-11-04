@@ -216,7 +216,8 @@ kbd { font-family: var(--mono); font-size: 11px; padding: 2px 6px; border-radius
         'Turned sales trends into demand-driven stock allocation for retail stores across Indonesia.',
         'Monitored inventory health with OOS and DOS metrics, flagging stores at risk of stockouts or overstock.',
         'Designed and maintained three core Tableau dashboards (OOS, DOS, KPI) used by regional teams nationwide.',
-        'Replaced manual daily pulls with Python bots that extract SAP reports into a PostgreSQL database I designed from scratch, scheduled with n8n.'
+        'Built a PostgreSQL data warehouse from scratch (schema, data model, daily history tables) as the single source of truth for national inventory analytics.',
+        'Developed RPA bots in Python that extract the daily planning report (sales, stock, forecast) and stock transfer order (STO) data from SAP and load them into the warehouse, orchestrated with n8n, eliminating manual exports.'
       ]) +
       job('Data Science Mentor', 'Cipta Peluang Nusantara', 'Nov 2023 – Jul 2025', ['Mentored students in data cleaning and analysis with Excel and Python; invited speaker at "Sedekah Ilmu".']) +
       job('Data Analyst Intern', 'Multi Bangun Abadi', 'Jun 2023 – Oct 2023', ['Built a spreadsheet system that syncs warehouse and finance data, and a web dashboard for the marketing team.']) +
@@ -226,7 +227,7 @@ kbd { font-family: var(--mono); font-size: 11px; padding: 2px 6px; border-radius
     { key: 'skills', title: 'Skills', color: 0x56c6ff, html:
       group('Data analysis', ['Python', 'Pandas', 'NumPy', 'SQL', 'Trend analysis', 'Data mining']) +
       group('Visualization & BI', ['Tableau', 'Looker', 'Advanced Excel']) +
-      group('Data modeling & automation', ['PostgreSQL', 'ETL', 'SAP extraction', 'n8n', 'Web scraping']) +
+      group('Data warehouse & RPA', ['PostgreSQL', 'Data warehousing', 'RPA (Python)', 'SAP extraction', 'n8n', 'ETL']) +
       group('Machine learning', ['Scikit-Learn', 'TensorFlow', 'PyTorch', 'Classification', 'Clustering']) +
       group('Retail domain', ['Inventory analytics', 'Stock allocation', 'Purchasing analysis', 'OOS / DOS'])
     },

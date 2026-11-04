@@ -3,13 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="Rafisa Arif Irfan — Supply Chain Data Scientist in Jakarta. Inventory analytics, stock allocation, and machine learning for national retail.">
-<meta property="og:title" content="Rafisa Arif Irfan — Supply Chain Data Scientist">
-<meta property="og:description" content="Inventory analytics, stock allocation, and machine learning for national retail.">
+<meta name="description" content="Rafisa Arif Irfan — Data Analyst in Jakarta. Inventory analytics, RPA automation and a data warehouse built from scratch for national retail.">
+<meta property="og:title" content="Rafisa Arif Irfan — Data Analyst, Supply Chain &amp; Retail">
+<meta property="og:description" content="Inventory analytics, RPA automation and a data warehouse built from scratch for national retail.">
 <meta property="og:type" content="website">
 <meta name="theme-color" content="#0a0f17">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230a0f17'/%3E%3Ctext x='16' y='22' font-family='Arial' font-weight='700' font-size='16' text-anchor='middle' fill='%23f5a524'%3ER.%3C/text%3E%3C/svg%3E">
-<title>Rafisa Arif Irfan — Supply Chain Data Scientist</title>
+<title>Rafisa Arif Irfan — Data Analyst</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap">
 <style>
@@ -237,10 +237,10 @@ footer { position: relative; z-index: 1; text-align: center; padding-block: 0 40
 
   <header class="hero" id="top">
     <div>
-      <span class="status"><span class="pulse" aria-hidden="true"></span>Open to Data Scientist roles · Supply Chain</span>
+      <span class="status"><span class="pulse" aria-hidden="true"></span>Open to Data Analyst roles · Supply Chain &amp; Retail</span>
       <h1>Rafisa<br><span class="grad">Arif Irfan</span></h1>
-      <div class="rotator"><span class="word">Supply Chain Data Scientist</span></div>
-      <p class="intro">I turn store-level sales and stock data into decisions for national retail inventory at Erajaya Swasembada: where stock should go, what Product Managers should buy, and which stores are about to run out. I also built the data foundation behind it, from SAP extraction to a PostgreSQL database, so every analysis starts from clean data.</p>
+      <div class="rotator"><span class="word">Data Analyst · Supply Chain &amp; Retail</span></div>
+      <p class="intro">I turn store-level sales, stock and forecast data into decisions for national retail inventory at Erajaya Swasembada: where stock should go, what Product Managers should buy, and which stores are about to run out. I also built the data behind it: RPA bots that pull reports out of SAP every day, and a PostgreSQL data warehouse I designed from scratch that keeps the daily history.</p>
       <div class="cta">
         <a class="btn primary" href="#experience">See my work ↓</a>
         <a class="btn" href="/forklift/">Play 3D CV ▶</a>
@@ -263,8 +263,8 @@ footer { position: relative; z-index: 1; text-align: center; padding-block: 0 40
       <div class="stages" role="tablist" aria-label="Pipeline stages">
         <div class="wire" aria-hidden="true"><i></i><i></i><i></i></div>
         <button class="stage" role="tab" aria-selected="true" data-i="0"><span class="node">SAP</span><span class="txt"><span class="st">01 · SOURCE</span><span class="nm">SAP ERP</span></span></button>
-        <button class="stage" role="tab" aria-selected="false" data-i="1"><span class="node">.py</span><span class="txt"><span class="st">02 · EXTRACT</span><span class="nm">Python RPA</span></span></button>
-        <button class="stage" role="tab" aria-selected="false" data-i="2"><span class="node">PG</span><span class="txt"><span class="st">03 · STORE</span><span class="nm">PostgreSQL</span></span></button>
+        <button class="stage" role="tab" aria-selected="false" data-i="1"><span class="node">.py</span><span class="txt"><span class="st">02 · EXTRACT</span><span class="nm">RPA bots</span></span></button>
+        <button class="stage" role="tab" aria-selected="false" data-i="2"><span class="node">DW</span><span class="txt"><span class="st">03 · STORE</span><span class="nm">Data warehouse</span></span></button>
         <button class="stage" role="tab" aria-selected="false" data-i="3"><span class="node">f(x)</span><span class="txt"><span class="st">04 · ANALYZE</span><span class="nm">Analysis</span></span></button>
         <button class="stage" role="tab" aria-selected="false" data-i="4"><span class="node">→◆</span><span class="txt"><span class="st">05 · DECIDE</span><span class="nm">Allocation</span></span></button>
       </div>
@@ -293,10 +293,10 @@ footer { position: relative; z-index: 1; text-align: center; padding-block: 0 40
               <li>Tracked active store status dynamically so allocation logic and downstream systems never route stock to closed stores.</li>
             </ul>
           </div>
-          <div class="group"><div class="label">Data foundation</div>
+          <div class="group"><div class="label">Data warehouse &amp; RPA</div>
             <ul>
-              <li>Designed and built a centralized PostgreSQL database from scratch as the single source of truth for national inventory analysis.</li>
-              <li>Developed Python-based RPA bots that extract data from SAP and load it into PostgreSQL, scheduled with n8n, replacing manual daily exports.</li>
+              <li>Built a PostgreSQL data warehouse from scratch (schema, data model, daily history tables) as the single source of truth for national inventory analytics.</li>
+              <li>Developed RPA bots in Python that extract the daily planning report (sales, stock, forecast) and stock transfer order (STO) data from SAP and load them into the warehouse, orchestrated with n8n, eliminating manual exports.</li>
               <li>Built reusable Python data transformation tools that became the team's standard daily workflow.</li>
             </ul>
           </div>
@@ -357,8 +357,8 @@ footer { position: relative; z-index: 1; text-align: center; padding-block: 0 40
         <div class="tags"><span class="tag">Scikit-Learn</span><span class="tag">TensorFlow</span><span class="tag">PyTorch</span><span class="tag">LSTM</span><span class="tag">Clustering</span></div></div>
       <div class="spot b-third"><h3><span class="ico">&lt;/&gt;</span>Languages</h3>
         <div class="tags"><span class="tag">Python</span><span class="tag">SQL</span><span class="tag">Pandas</span><span class="tag">NumPy</span></div></div>
-      <div class="spot b-third"><h3><span class="ico">DB</span>Data foundation</h3>
-        <div class="tags"><span class="tag">PostgreSQL</span><span class="tag">SAP extraction</span><span class="tag">Python RPA</span><span class="tag">n8n</span><span class="tag">ETL</span></div></div>
+      <div class="spot b-third"><h3><span class="ico">DW</span>Data warehouse &amp; RPA</h3>
+        <div class="tags"><span class="tag">PostgreSQL</span><span class="tag">Data warehousing</span><span class="tag">RPA (Python)</span><span class="tag">SAP extraction</span><span class="tag">n8n</span><span class="tag">ETL</span></div></div>
       <div class="spot b-third"><h3><span class="ico">BI</span>Visualization</h3>
         <div class="tags"><span class="tag">Tableau</span><span class="tag">Looker</span><span class="tag">Excel</span></div></div>
     </div>
@@ -388,8 +388,8 @@ footer { position: relative; z-index: 1; text-align: center; padding-block: 0 40
   <section id="contact" class="reveal">
     <div class="spot contact">
       <span class="label">Contact</span>
-      <h2 style="margin-top:12px">Let's predict what <span class="grad">sells next</span>.</h2>
-      <p>Hiring a data scientist for supply chain, retail or inventory? Send me an email.</p>
+      <h2 style="margin-top:12px">Let's turn data into <span class="grad">decisions</span>.</h2>
+      <p>Hiring for data analytics in retail, e-commerce or supply chain? Send me an email.</p>
       <div class="cta">
         <button class="btn primary" id="copy-email-2" type="button">Copy rafisairfan36@gmail.com</button>
         <a class="btn" href="https://www.linkedin.com/in/rafirfan/" target="_blank" rel="noopener">LinkedIn ↗</a>
@@ -420,8 +420,8 @@ footer { position: relative; z-index: 1; text-align: center; padding-block: 0 40
   /* Pipeline tabs */
   var data = [
     ['SOURCE', 'SAP ERP', 'Sales, stock and purchase order data for stores across Indonesia lives in SAP. Every analysis starts here.', '$ source <b>● sap</b> · national inventory'],
-    ['EXTRACT', 'Python RPA + n8n', 'Python bots pull SAP reports and clean them into structured tables. n8n runs them on schedule, so fresh data lands every day without manual exports.', '$ n8n workflow <b>● active</b> · daily'],
-    ['STORE', 'PostgreSQL', 'A central database I designed from scratch. One trusted source of store, SKU and stock history to analyze and model on.', '$ psql inventory <b>● connected</b>'],
+    ['EXTRACT', 'RPA bots + n8n', 'Python RPA bots pull the daily planning report (sales, stock, forecast) and stock transfer orders (STO) out of SAP. n8n runs them on schedule, so fresh data lands every morning without manual exports.', '$ n8n workflow <b>● active</b> · daily'],
+    ['STORE', 'Data warehouse', 'A PostgreSQL data warehouse I built from scratch. It keeps a daily snapshot of sales, stock and forecast plus every STO, so history and trends are one query away.', '$ psql dwh <b>● connected</b> · daily snapshots'],
     ['ANALYZE', 'Store-level analysis', 'Sales velocity, stock cover (DOS) and out-of-stock risk (OOS) per store and SKU, tracked in three Tableau dashboards used nationwide.', '$ analyze --by store,sku <b>● ready</b>'],
     ['DECIDE', 'Allocation & purchasing', 'The output is a decision: how much stock each store gets, and how much Product Managers should buy for major global brands.', '$ allocate --demand-driven <b>● shipped</b>']
   ];
@@ -450,7 +450,7 @@ footer { position: relative; z-index: 1; text-align: center; padding-block: 0 40
 
   /* Scroll: progress bar, timeline fill, active nav, reveal */
   var prog = document.getElementById('progress'), tl = document.getElementById('timeline');
-  var links = Array.prototype.slice.call(document.querySelectorAll('.nav-links a'));
+  var links = Array.prototype.slice.call(document.querySelectorAll('.nav-links a[href^="#"]'));
   var secs = links.map(function (a) { return document.querySelector(a.getAttribute('href')); });
   function onScroll() {
     var h = document.documentElement, max = h.scrollHeight - innerHeight;
